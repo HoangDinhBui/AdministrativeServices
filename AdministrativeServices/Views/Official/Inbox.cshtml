@@ -1,0 +1,57 @@
+@model IEnumerable<AdministrativeServices.Models.Application>
+
+@{
+    ViewData["Title"] = "Hành bạ xử lý";
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold">Hồ sơ chờ xử lý</h2>
+    <p class="text-muted">Danh sách hồ sơ mới nộp hoặc đang trong quá trình thẩm định.</p>
+</div>
+
+<div class="glass-card p-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Mã số</th>
+                    <th>Người nộp</th>
+                    <th>Dịch vụ</th>
+                    <th>Ngày nộp</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">#@item.Id.ToString("D5")</td>
+                        <td>
+                            <div>@item.Citizen?.FullName</div>
+                            <small class="text-muted">@item.Citizen?.Email</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">@item.ServiceType?.Name</span></td>
+                        <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                             @{
+                                var badgeClass = item.Status switch
+                                {
+                                    ApplicationStatus.Submitted => "bg-primary",
+                                    ApplicationStatus.InReview => "bg-info",
+                                    ApplicationStatus.PendingApproval => "bg-warning",
+                                    ApplicationStatus.SupplementRequired => "bg-secondary",
+                                    _ => "bg-dark"
+                                };
+                            }
+                            <span class="badge @badgeClass">@item.Status</span>
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Xử lý</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+@model IEnumerable<AdministrativeServices.Models.Application>
+
+@{
+    ViewData["Title"] = "Hồ sơ của tôi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Danh sách hồ sơ đã nộp</h2>
+    <a asp-action="CreateResidentRegistration" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Nộp hồ sơ mới
+    </a>
+</div>
+
+<div class="glass-card p-4">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <p class="text-muted">Bạn chưa có hồ sơ nào.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã hồ sơ</th>
+                        <th>Dịch vụ</th>
+                        <th>Ngày nộp</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>#@item.Id.ToString("D5")</td>
+                            <td>@item.ServiceType?.Name</td>
+                            <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                @{
+                                    var badgeClass = item.Status switch
+                                    {
+                                        ApplicationStatus.Submitted => "bg-primary",
+                                        ApplicationStatus.InReview => "bg-info",
+                                        ApplicationStatus.Completed => "bg-success",
+                                        ApplicationStatus.Rejected => "bg-danger",
+                                        ApplicationStatus.SupplementRequired => "bg-warning",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @badgeClass">@item.Status</span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

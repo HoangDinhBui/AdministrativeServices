@@ -1,0 +1,111 @@
+@model AdministrativeServices.Models.Application
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Chi tiết hồ sơ #" + Model.Id.ToString("D5");
+    var formData = JsonSerializer.Deserialize<JsonElement>(Model.ContentJson);
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="glass-card p-4 mb-4">
+            <h4 class="fw-bold mb-4 border-bottom pb-2">Thông tin hồ sơ #@Model.Id.ToString("D5")</h4>
+            
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted">Dịch vụ:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.ServiceType?.Name</dd>
+
+                <dt class="col-sm-4 text-muted">Người nộp:</dt>
+                <dd class="col-sm-8">@Model.Citizen?.FullName (@Model.Citizen?.Email)</dd>
+
+                <dt class="col-sm-4 text-muted">Ngày nộp:</dt>
+                <dd class="col-sm-8">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
+            </dl>
+
+            <h5 class="fw-bold mt-4 mb-3 text-primary">Nội dung tờ khai (CT01)</h5>
+            <div class="bg-light p-3 rounded">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <label class="small text-muted">Họ tên:</label>
+                        <div class="fw-medium">@formData.GetProperty("FullName").GetString()</div>
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted">Ngày sinh:</label>
+                        <div class="fw-medium">@formData.GetProperty("DOB").GetString()</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="small text-muted">Địa chỉ đăng ký:</label>
+                        <div class="fw-medium">@formData.GetProperty("Address").GetString()</div>
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted">Chủ hộ:</label>
+                        <div class="fw-medium">@formData.GetProperty("HouseholdOwner").GetString()</div>
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted">Quan hệ:</label>
+                        <div class="fw-medium">@formData.GetProperty("Relationship").GetString()</div>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mt-4 mb-3">Tệp tin đính kèm</h5>
+            <div class="list-group list-group-flush">
+                @foreach (var file in Model.Attachments)
+                {
+                    <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-file-earmark-pdf text-danger me-2"></i> @file.FileName
+                        </div>
+                        <span class="btn btn-sm btn-outline-secondary">Xem</span>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3">Lịch sử xử lý</h5>
+            <div class="timeline small">
+                @foreach (var log in Model.History.OrderByDescending(h => h.ChangeDate))
+                {
+                    <div class="border-start ps-3 pb-3 position-relative">
+                        <div class="fw-bold">@log.Status</div>
+                        <div class="text-muted">@log.ChangeDate.ToString("dd/MM HH:mm") - @log.ChangedBy?.FullName</div>
+                        <p class="mb-0 italic mt-1">"@log.Note"</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="glass-card p-4 sticky-top" style="top: 1rem;">
+            <h5 class="fw-bold mb-4">Thao tác nghiệp vụ</h5>
+            
+            <form asp-action="Process" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                
+                <div class="mb-3">
+                    <label class="form-label">Chuyển trạng thái</label>
+                    <select name="nextStatus" class="form-select">
+                        <option value="@ApplicationStatus.InReview">Tiếp nhận & Thẩm định</option>
+                        <option value="@ApplicationStatus.PendingApproval">Trình Lãnh đạo ký</option>
+                        <option value="@ApplicationStatus.SupplementRequired">Yêu cầu bổ sung</option>
+                        <option value="@ApplicationStatus.Rejected">Từ chối hồ sơ</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Ghi chú / Lý do</label>
+                    <textarea name="note" class="form-control" rows="4" placeholder="Nhập nội dung phản hồi cho dân hoặc trao đổi nội bộ..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Cập nhật hồ sơ</button>
+            </form>
+
+            <div class="mt-4 pt-3 border-top">
+                <p class="small text-muted"><i class="bi bi-info-circle"></i> Cán bộ có thể tra cứu thông tin dân cư tại hệ thống định danh quốc gia trước khi phê duyệt.</p>
+                <button class="btn btn-sm btn-outline-info w-100">Tra cứu Dữ liệu Dân cư</button>
+            </div>
+        </div>
+    </div>
+</div>

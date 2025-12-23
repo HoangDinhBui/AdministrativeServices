@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="glass-card auth-container">
+    <h2 class="text-center mb-4">Chào mừng trở lại</h2>
+    <form asp-action="Login" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input name="email" type="email" class="form-control" placeholder="example@email.com" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mật khẩu</label>
+            <input name="password" type="password" class="form-control" placeholder="••••••••" required />
+        </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="rememberMe" class="form-check-input" id="rememberMe">
+            <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-2">Đăng nhập</button>
+        
+        <div class="text-center mt-4">
+            <span>Chưa có tài khoản? </span>
+            <a asp-action="Register" class="text-decoration-none">Đăng ký mới</a>
+        </div>
+    </form>
+</div>

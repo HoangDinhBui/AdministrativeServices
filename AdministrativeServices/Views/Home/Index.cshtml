@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-3">Dịch Vụ Công Trực Tuyến</h1>
+            <p class="lead text-muted mb-4">Nhanh chóng, thuận tiện và minh bạch. Hệ thống tích hợp toàn diện cho mọi nhu cầu hành chính của bạn.</p>
+            @if (User.Identity?.IsAuthenticated != true)
+            {
+                <div class="d-flex gap-2">
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg px-4">Đăng ký ngay</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-lg px-4">Đăng nhập</a>
+                </div>
+            }
+        </div>
+        <div class="col-lg-6">
+            <div class="glass-card p-4 d-flex align-items-center justify-content-center" style="min-height: 300px; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white;">
+                <div class="text-center">
+                    <h3 class="fw-bold mb-0">Hệ thống GATEWAY 2025</h3>
+                    <p class="opacity-75">Phiên bản 1.0.0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="fw-bold mb-4">Dịch vụ nổi bật</h3>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 transition-hover">
+                <div class="mb-3 text-primary"><i class="bi bi-house-door-fill fs-1"></i></div>
+                <h5 class="fw-bold">Đăng ký thường trú</h5>
+                <p class="small text-muted">Đăng ký thường trú vào hộ gia đình đã có sẵn hoặc thành lập hộ mới khi đủ điều kiện.</p>
+                <a asp-controller="Citizen" asp-action="CreateResidentRegistration" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold">Thực hiện ngay &rarr;</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 opacity-50">
+                <div class="mb-3 text-primary"><i class="bi bi-person-plus-fill fs-1"></i></div>
+                <h5 class="fw-bold">Đăng ký khai sinh</h5>
+                <p class="small text-muted">Dịch vụ liên thông đăng ký khai sinh, cấp thẻ BHYT và đăng ký thường trú cho trẻ.</p>
+                <span class="badge bg-secondary">Sắp ra mắt</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 opacity-50">
+                <div class="mb-3 text-primary"><i class="bi bi-heart-fill fs-1"></i></div>
+                <h5 class="fw-bold">Đăng ký kết hôn</h5>
+                <p class="small text-muted">Thực hiện thủ tục đăng ký kết hôn trực tuyến dành cho công dân Việt Nam.</p>
+                <span class="badge bg-secondary">Sắp ra mắt</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+</style>

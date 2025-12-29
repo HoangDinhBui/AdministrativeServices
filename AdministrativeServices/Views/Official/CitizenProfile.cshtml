@@ -1,0 +1,142 @@
+@model AdministrativeServices.Models.Citizen
+
+@{
+    ViewData["Title"] = "Hồ sơ Công dân - " + Model.FullName;
+    var marriages = ViewBag.Marriages as List<AdministrativeServices.Models.MarriageRecord> ?? new List<AdministrativeServices.Models.MarriageRecord>();
+    var children = ViewBag.Children as List<AdministrativeServices.Models.BirthRecord> ?? new List<AdministrativeServices.Models.BirthRecord>();
+    var householdMembers = ViewBag.HouseholdMembers as List<AdministrativeServices.Models.HouseholdMember> ?? new List<AdministrativeServices.Models.HouseholdMember>();
+}
+
+<div class="mb-4">
+    <a asp-action="Search" class="btn btn-link text-muted px-0"><i class="bi bi-arrow-left"></i> Quay lại tra cứu</a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="glass-card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">@Model.FullName</h2>
+                    <span class="badge bg-primary fs-6">@Model.CCCD</span>
+                </div>
+                <span class="badge @(Model.MaritalStatus == "Đã kết hôn" ? "bg-success" : "bg-secondary") fs-6">
+                    @Model.MaritalStatus
+                </span>
+            </div>
+            
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted">Ngày sinh:</dt>
+                <dd class="col-sm-8">@Model.DateOfBirth.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-4 text-muted">Giới tính:</dt>
+                <dd class="col-sm-8">@Model.Gender</dd>
+
+                <dt class="col-sm-4 text-muted">Nơi sinh:</dt>
+                <dd class="col-sm-8">@Model.PlaceOfBirth</dd>
+
+                <dt class="col-sm-4 text-muted">Dân tộc:</dt>
+                <dd class="col-sm-8">@Model.Ethnicity</dd>
+
+                <dt class="col-sm-4 text-muted">Quốc tịch:</dt>
+                <dd class="col-sm-8">@Model.Nationality</dd>
+            </dl>
+        </div>
+
+        @if (Model.Father != null || Model.Mother != null)
+        {
+            <div class="glass-card p-4 mb-4">
+                <h5 class="fw-bold mb-3">Thông tin Cha/Mẹ</h5>
+                @if (Model.Father != null)
+                {
+                    <div class="mb-2">
+                        <strong>Cha:</strong> @Model.Father.FullName (CCCD: @Model.Father.CCCD)
+                    </div>
+                }
+                @if (Model.Mother != null)
+                {
+                    <div>
+                        <strong>Mẹ:</strong> @Model.Mother.FullName (CCCD: @Model.Mother.CCCD)
+                    </div>
+                }
+            </div>
+        }
+
+        @if (marriages.Any())
+        {
+            <div class="glass-card p-4 mb-4">
+                <h5 class="fw-bold mb-3">Lịch sử Hôn nhân</h5>
+                @foreach (var m in marriages)
+                {
+                    var spouse = m.Spouse1Id == Model.Id ? m.Spouse2 : m.Spouse1;
+                    <div class="border-start border-3 @(m.Status == "Active" ? "border-success" : "border-secondary") ps-3 mb-3">
+                        <div><strong>@spouse?.FullName</strong> (CCCD: @spouse?.CCCD)</div>
+                        <div class="small text-muted">Ngày kết hôn: @m.MarriageDate.ToString("dd/MM/yyyy")</div>
+                        <div class="small">
+                            <span class="badge @(m.Status == "Active" ? "bg-success" : "bg-secondary")">@m.Status</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (children.Any())
+        {
+            <div class="glass-card p-4 mb-4">
+                <h5 class="fw-bold mb-3">Con cái (@children.Count)</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Họ tên</th>
+                                <th>Ngày sinh</th>
+                                <th>Giới tính</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in children)
+                            {
+                                <tr>
+                                    <td>@c.ChildFullName</td>
+                                    <td>@c.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                                    <td>@c.Gender</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-lg-4">
+        @if (Model.CurrentHousehold != null)
+        {
+            <div class="glass-card p-4 mb-4">
+                <h5 class="fw-bold mb-3">Thường trú</h5>
+                <div class="mb-2"><strong>Số hộ khẩu:</strong> @Model.CurrentHousehold.HouseholdNumber</div>
+                <div class="mb-3"><strong>Địa chỉ:</strong> @Model.CurrentHousehold.Address</div>
+                
+                @if (householdMembers.Any())
+                {
+                    <h6 class="fw-bold mb-2">Thành viên hộ</h6>
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var member in householdMembers)
+                        {
+                            <li class="mb-1">
+                                <span class="badge bg-light text-dark">@member.RelationshipToOwner</span>
+                                @member.Citizen?.FullName
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="glass-card p-4 mb-4">
+                <h5 class="fw-bold mb-3">Thường trú</h5>
+                <p class="text-muted mb-0">Chưa có thông tin thường trú trong hệ thống.</p>
+            </div>
+        }
+    </div>
+</div>

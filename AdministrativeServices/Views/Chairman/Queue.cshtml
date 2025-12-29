@@ -1,0 +1,65 @@
+@model IEnumerable<AdministrativeServices.Models.Application>
+
+@{
+    ViewData["Title"] = "Hồ sơ chờ ký duyệt";
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold">Hồ sơ chờ phê duyệt & Ký số</h2>
+    <p class="text-muted">Danh sách hồ sơ đã được cán bộ thẩm định và đang chờ lãnh đạo ký duyệt.</p>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="glass-card p-4">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-3">
+                <i class="bi bi-inbox fs-1 text-muted"></i>
+            </div>
+            <p class="text-muted">Không có hồ sơ nào đang chờ ký duyệt.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã số</th>
+                        <th>Người nộp</th>
+                        <th>Dịch vụ</th>
+                        <th>Ngày nộp</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">#@item.Id.ToString("D5")</td>
+                            <td>
+                                <div>@item.Citizen?.FullName</div>
+                                <small class="text-muted">@item.Citizen?.Email</small>
+                            </td>
+                            <td><span class="badge bg-info">@item.ServiceType?.Name</span></td>
+                            <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <a asp-action="Review" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pen"></i> Xem & Ký
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

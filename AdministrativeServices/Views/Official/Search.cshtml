@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Tra cứu Dữ liệu Dân cư";
+}
+
+<div class="max-width-800 mx-auto">
+    <div class="mb-4">
+        <h2 class="fw-bold">Tra cứu Dữ liệu Dân cư</h2>
+        <p class="text-muted">Tìm kiếm công dân theo số CCCD/Định danh để xem thông tin chi tiết.</p>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+        <form asp-action="Search" method="post">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label">Số CCCD/Định danh</label>
+                    <input name="cccd" class="form-control form-control-lg" placeholder="012345678901" />
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-warning mt-3 mb-0">
+                <i class="bi bi-exclamation-triangle"></i> @ViewBag.Error
+            </div>
+        }
+    </div>
+
+    <div class="glass-card p-4">
+        <h5 class="fw-bold mb-3">Kiểm tra hôn nhân</h5>
+        <p class="small text-muted mb-3">Kiểm tra trạng thái hôn nhân giữa hai công dân.</p>
+        
+        <form id="marriageCheckForm">
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">CCCD Người 1</label>
+                    <input id="cccd1" class="form-control" placeholder="CCCD cha/chồng" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">CCCD Người 2</label>
+                    <input id="cccd2" class="form-control" placeholder="CCCD mẹ/vợ" />
+                </div>
+            </div>
+            <button type="button" onclick="checkMarriage()" class="btn btn-outline-primary">
+                <i class="bi bi-heart"></i> Kiểm tra kết hôn
+            </button>
+        </form>
+
+        <div id="marriageResult" class="mt-3" style="display:none;"></div>
+    </div>
+</div>
+
+<style>
+    .max-width-800 { max-width: 800px; }
+</style>
+
+@section Scripts {
+<script>
+    async function checkMarriage() {
+        const cccd1 = document.getElementById('cccd1').value;
+        const cccd2 = document.getElementById('cccd2').value;
+        
+        if (!cccd1 || !cccd2) {
+            alert('Vui lòng nhập cả hai số CCCD');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('cccd1', cccd1);
+        formData.append('cccd2', cccd2);
+
+        const response = await fetch('@Url.Action("CheckMarriage")', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+        const resultDiv = document.getElementById('marriageResult');
+        resultDiv.style.display = 'block';
+
+        if (result.married) {
+            resultDiv.className = 'mt-3 alert alert-success';
+            resultDiv.innerHTML = '<i class="bi bi-check-circle"></i> ' + result.message;
+        } else {
+            resultDiv.className = 'mt-3 alert alert-warning';
+            resultDiv.innerHTML = '<i class="bi bi-exclamation-circle"></i> ' + result.message;
+        }
+    }
+</script>
+}

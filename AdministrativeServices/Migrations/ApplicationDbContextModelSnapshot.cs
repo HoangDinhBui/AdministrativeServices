@@ -202,6 +202,267 @@ namespace AdministrativeServices.Migrations
                     b.ToTable("Attachments");
                 });
 
+            modelBuilder.Entity("AdministrativeServices.Models.BirthRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ChildCitizenId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ChildFullName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FatherCCCD")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("FatherId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FatherName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GeneratedCitizenId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MotherCCCD")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("MotherId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MotherName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ParentMarriageRecordId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("ParentsMarriageVerified")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PlaceOfBirth")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RegistrationNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RegistrationPlace")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SignedByChairmanId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SignedByOfficialId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("SignedDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChildCitizenId");
+
+                    b.HasIndex("FatherId");
+
+                    b.HasIndex("MotherId");
+
+                    b.ToTable("BirthRecords");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.Citizen", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CCCD")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("CurrentHouseholdId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ethnicity")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("FatherId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MaritalStatus")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("MotherId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Nationality")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PlaceOfBirth")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CCCD")
+                        .IsUnique();
+
+                    b.HasIndex("CurrentHouseholdId");
+
+                    b.HasIndex("FatherId");
+
+                    b.HasIndex("MotherId");
+
+                    b.ToTable("Citizens");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.HouseholdMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CitizenId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HouseholdId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsCurrentMember")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("JoinDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LeaveDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RelationshipToOwner")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CitizenId");
+
+                    b.HasIndex("HouseholdId");
+
+                    b.ToTable("HouseholdMembers");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.HouseholdRegistry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HouseholdNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ward")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("HouseholdRegistries");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.MarriageRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DivorceDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("MarriageDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RegistrationNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RegistrationPlace")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Spouse1Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Spouse2Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Spouse1Id");
+
+                    b.HasIndex("Spouse2Id");
+
+                    b.ToTable("MarriageRecords");
+                });
+
             modelBuilder.Entity("AdministrativeServices.Models.ServiceType", b =>
                 {
                     b.Property<int>("Id")
@@ -403,6 +664,101 @@ namespace AdministrativeServices.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("AdministrativeServices.Models.BirthRecord", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.Citizen", "ChildCitizen")
+                        .WithMany("BirthRecordsAsChild")
+                        .HasForeignKey("ChildCitizenId");
+
+                    b.HasOne("AdministrativeServices.Models.Citizen", "Father")
+                        .WithMany()
+                        .HasForeignKey("FatherId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AdministrativeServices.Models.Citizen", "Mother")
+                        .WithMany()
+                        .HasForeignKey("MotherId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ChildCitizen");
+
+                    b.Navigation("Father");
+
+                    b.Navigation("Mother");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.Citizen", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.HouseholdRegistry", "CurrentHousehold")
+                        .WithMany()
+                        .HasForeignKey("CurrentHouseholdId");
+
+                    b.HasOne("AdministrativeServices.Models.Citizen", "Father")
+                        .WithMany()
+                        .HasForeignKey("FatherId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AdministrativeServices.Models.Citizen", "Mother")
+                        .WithMany()
+                        .HasForeignKey("MotherId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CurrentHousehold");
+
+                    b.Navigation("Father");
+
+                    b.Navigation("Mother");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.HouseholdMember", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.Citizen", "Citizen")
+                        .WithMany()
+                        .HasForeignKey("CitizenId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AdministrativeServices.Models.HouseholdRegistry", "Household")
+                        .WithMany("Members")
+                        .HasForeignKey("HouseholdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Citizen");
+
+                    b.Navigation("Household");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.HouseholdRegistry", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.Citizen", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.MarriageRecord", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.Citizen", "Spouse1")
+                        .WithMany("MarriagesAsSpouse1")
+                        .HasForeignKey("Spouse1Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AdministrativeServices.Models.Citizen", "Spouse2")
+                        .WithMany("MarriagesAsSpouse2")
+                        .HasForeignKey("Spouse2Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Spouse1");
+
+                    b.Navigation("Spouse2");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -459,6 +815,20 @@ namespace AdministrativeServices.Migrations
                     b.Navigation("Attachments");
 
                     b.Navigation("History");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.Citizen", b =>
+                {
+                    b.Navigation("BirthRecordsAsChild");
+
+                    b.Navigation("MarriagesAsSpouse1");
+
+                    b.Navigation("MarriagesAsSpouse2");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.HouseholdRegistry", b =>
+                {
+                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }

@@ -3,7 +3,8 @@
 
 @{
     ViewData["Title"] = "Chi tiết hồ sơ #" + Model.Id.ToString("D5");
-    var formData = JsonSerializer.Deserialize<JsonElement>(Model.ContentJson);
+    JsonElement? formData = null;
+    try { formData = JsonSerializer.Deserialize<JsonElement>(Model.ContentJson); } catch { }
 }
 
 <div class="row">
@@ -22,30 +23,24 @@
                 <dd class="col-sm-8">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
             </dl>
 
-            <h5 class="fw-bold mt-4 mb-3 text-primary">Nội dung tờ khai (CT01)</h5>
+            <h5 class="fw-bold mt-4 mb-3 text-primary">Nội dung hồ sơ</h5>
             <div class="bg-light p-3 rounded">
-                <div class="row g-3">
-                    <div class="col-6">
-                        <label class="small text-muted">Họ tên:</label>
-                        <div class="fw-medium">@formData.GetProperty("FullName").GetString()</div>
+                @if (formData.HasValue)
+                {
+                    <div class="row g-3">
+                        @foreach (var prop in formData.Value.EnumerateObject())
+                        {
+                            <div class="col-md-6">
+                                <label class="small text-muted">@prop.Name:</label>
+                                <div class="fw-medium">@prop.Value.ToString()</div>
+                            </div>
+                        }
                     </div>
-                    <div class="col-6">
-                        <label class="small text-muted">Ngày sinh:</label>
-                        <div class="fw-medium">@formData.GetProperty("DOB").GetString()</div>
-                    </div>
-                    <div class="col-12">
-                        <label class="small text-muted">Địa chỉ đăng ký:</label>
-                        <div class="fw-medium">@formData.GetProperty("Address").GetString()</div>
-                    </div>
-                    <div class="col-6">
-                        <label class="small text-muted">Chủ hộ:</label>
-                        <div class="fw-medium">@formData.GetProperty("HouseholdOwner").GetString()</div>
-                    </div>
-                    <div class="col-6">
-                        <label class="small text-muted">Quan hệ:</label>
-                        <div class="fw-medium">@formData.GetProperty("Relationship").GetString()</div>
-                    </div>
-                </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Không có dữ liệu form.</p>
+                }
             </div>
 
             <h5 class="fw-bold mt-4 mb-3">Tệp tin đính kèm</h5>

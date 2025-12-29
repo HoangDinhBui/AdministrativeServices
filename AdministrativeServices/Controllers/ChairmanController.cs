@@ -78,6 +78,13 @@ namespace AdministrativeServices.Controllers
                 await CreateBirthRecordFromApplication(application, currentUserId);
             }
 
+            // If this is a marriage registration, create marriage record
+            var marriageService = await _context.ServiceTypes.FirstOrDefaultAsync(s => s.Name == "Đăng ký kết hôn");
+            if (marriageService != null && application.ServiceTypeId == marriageService.Id)
+            {
+                await CreateMarriageRecordFromApplication(application, currentUserId);
+            }
+
             TempData["SuccessMessage"] = $"Đã ký duyệt thành công hồ sơ #{id:D5}!";
             return RedirectToAction(nameof(Queue));
         }
@@ -155,6 +162,82 @@ namespace AdministrativeServices.Controllers
                 };
 
                 _context.BirthRecords.Add(birthRecord);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                // Log error but don't fail the signing process
+            }
+        }
+
+        private async Task CreateMarriageRecordFromApplication(Application application, string? signedById)
+        {
+            try
+            {
+                var formData = JsonSerializer.Deserialize<JsonElement>(application.ContentJson);
+
+                var applicantCCCD = formData.GetProperty("ApplicantCCCD").GetString();
+                var spouseCCCD = formData.GetProperty("SpouseCCCD").GetString();
+
+                // Find or create citizens in the system
+                var spouse1 = await _context.Citizens.FirstOrDefaultAsync(c => c.CCCD == applicantCCCD);
+                var spouse2 = await _context.Citizens.FirstOrDefaultAsync(c => c.CCCD == spouseCCCD);
+
+                int? spouse1Id = spouse1?.Id;
+                int? spouse2Id = spouse2?.Id;
+
+                // Create citizen records if they don't exist
+                if (spouse1 == null)
+                {
+                    var newCitizen = new Citizen
+                    {
+                        CCCD = applicantCCCD ?? "",
+                        FullName = formData.GetProperty("ApplicantName").GetString() ?? "",
+                        DateOfBirth = DateTime.Parse(formData.GetProperty("ApplicantDOB").GetString() ?? DateTime.Now.ToString()),
+                        Gender = formData.GetProperty("ApplicantGender").GetString() ?? "",
+                        MaritalStatus = "Đã kết hôn"
+                    };
+                    _context.Citizens.Add(newCitizen);
+                    await _context.SaveChangesAsync();
+                    spouse1Id = newCitizen.Id;
+                }
+                else
+                {
+                    spouse1.MaritalStatus = "Đã kết hôn";
+                }
+
+                if (spouse2 == null)
+                {
+                    var newCitizen = new Citizen
+                    {
+                        CCCD = spouseCCCD ?? "",
+                        FullName = formData.GetProperty("SpouseName").GetString() ?? "",
+                        DateOfBirth = DateTime.Parse(formData.GetProperty("SpouseDOB").GetString() ?? DateTime.Now.ToString()),
+                        Gender = formData.GetProperty("SpouseGender").GetString() ?? "",
+                        MaritalStatus = "Đã kết hôn"
+                    };
+                    _context.Citizens.Add(newCitizen);
+                    await _context.SaveChangesAsync();
+                    spouse2Id = newCitizen.Id;
+                }
+                else
+                {
+                    spouse2.MaritalStatus = "Đã kết hôn";
+                }
+
+                // Create marriage record
+                var marriageRecord = new MarriageRecord
+                {
+                    RegistrationNumber = $"KH-{DateTime.Now.Year}-{application.Id:D6}",
+                    Spouse1Id = spouse1Id ?? 0,
+                    Spouse2Id = spouse2Id ?? 0,
+                    MarriageDate = DateTime.UtcNow,
+                    RegistrationPlace = "Hệ thống Dịch vụ Công trực tuyến",
+                    Status = "Active",
+                    CreatedDate = DateTime.UtcNow
+                };
+
+                _context.MarriageRecords.Add(marriageRecord);
                 await _context.SaveChangesAsync();
             }
             catch

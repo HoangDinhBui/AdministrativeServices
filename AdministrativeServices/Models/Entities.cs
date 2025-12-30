@@ -16,6 +16,7 @@ namespace AdministrativeServices.Models
     public enum ApplicationStatus
     {
         Draft,
+        AwaitingConfirmation, // Waiting for User B (spouse/owner) to confirm
         Submitted,
         InReview,
         SupplementRequired,
@@ -75,5 +76,37 @@ namespace AdministrativeServices.Models
         public string Note { get; set; } = string.Empty;
         public string ChangedById { get; set; } = string.Empty;
         public ApplicationUser? ChangedBy { get; set; }
+    }
+
+    /// <summary>
+    /// Confirmation request for spouse (marriage) or owner (temporary residence)
+    /// </summary>
+    public class ConfirmationRequest
+    {
+        public int Id { get; set; }
+        
+        public int ApplicationId { get; set; }
+        public Application? Application { get; set; }
+        
+        // User who submitted the application
+        public string RequesterId { get; set; } = string.Empty;
+        public ApplicationUser? Requester { get; set; }
+        
+        // User who needs to confirm (spouse or owner)
+        public string TargetUserId { get; set; } = string.Empty;
+        public ApplicationUser? TargetUser { get; set; }
+        
+        // Also store CCCD for lookup
+        public string TargetCCCD { get; set; } = string.Empty;
+        
+        // Type: Marriage, TemporaryResidence
+        public string RequestType { get; set; } = string.Empty;
+        
+        // Status: Pending, Confirmed, Rejected
+        public string Status { get; set; } = "Pending";
+        public string? RejectReason { get; set; }
+        
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime? ResponseDate { get; set; }
     }
 }

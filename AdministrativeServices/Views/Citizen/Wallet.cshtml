@@ -1,0 +1,169 @@
+@{
+    ViewData["Title"] = "Ví giấy tờ";
+    var birthRecords = ViewBag.BirthRecords as List<AdministrativeServices.Models.BirthRecord> ?? new List<AdministrativeServices.Models.BirthRecord>();
+    var marriageRecords = ViewBag.MarriageRecords as List<AdministrativeServices.Models.MarriageRecord> ?? new List<AdministrativeServices.Models.MarriageRecord>();
+    var tempResidences = ViewBag.TempResidences as List<AdministrativeServices.Models.TemporaryResidence> ?? new List<AdministrativeServices.Models.TemporaryResidence>();
+    var completedApps = ViewBag.CompletedApps as List<AdministrativeServices.Models.Application> ?? new List<AdministrativeServices.Models.Application>();
+    var userCCCD = ViewBag.UserCCCD as string ?? "";
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold">Ví giấy tờ điện tử</h2>
+    <p class="text-muted">Lưu trữ và quản lý các giấy tờ điện tử đã được cấp.</p>
+</div>
+
+@if (string.IsNullOrEmpty(userCCCD))
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Bạn chưa cập nhật số CCCD. Vui lòng cập nhật tại 
+        <a asp-controller="Account" asp-action="Profile">Thông tin cá nhân</a> để xem giấy tờ.
+    </div>
+}
+
+<div class="row g-4">
+    <!-- Birth Certificates -->
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card p-4 h-100">
+            <div class="d-flex align-items-center mb-3">
+                <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-file-earmark-medical fs-3 text-success"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">Giấy khai sinh</h6>
+                    <small class="text-muted">Con của bạn</small>
+                </div>
+            </div>
+            @if (birthRecords.Any())
+            {
+                foreach (var record in birthRecords)
+                {
+                    <div class="border rounded p-2 mb-2">
+                        <div class="fw-medium">@record.ChildFullName</div>
+                        <small class="text-muted">Sinh: @record.DateOfBirth.ToString("dd/MM/yyyy")</small>
+                        <div class="mt-2">
+                            <span class="badge bg-success">Đã cấp</span>
+                            <small class="text-muted ms-2">@record.RegistrationNumber</small>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <span class="badge bg-secondary">Chưa có</span>
+            }
+        </div>
+    </div>
+
+    <!-- Marriage Certificates -->
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card p-4 h-100">
+            <div class="d-flex align-items-center mb-3">
+                <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-heart fs-3 text-danger"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">Giấy đăng ký kết hôn</h6>
+                    <small class="text-muted">Bản điện tử</small>
+                </div>
+            </div>
+            @if (marriageRecords.Any())
+            {
+                foreach (var record in marriageRecords)
+                {
+                    <div class="border rounded p-2 mb-2">
+                        <div class="fw-medium">
+                            @record.Spouse1?.FullName & @record.Spouse2?.FullName
+                        </div>
+                        <small class="text-muted">Ngày: @record.MarriageDate.ToString("dd/MM/yyyy")</small>
+                        <div class="mt-2">
+                            <span class="badge @(record.Status == "Active" ? "bg-success" : "bg-secondary")">
+                                @(record.Status == "Active" ? "Đang hiệu lực" : record.Status)
+                            </span>
+                            <small class="text-muted ms-2">@record.RegistrationNumber</small>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <span class="badge bg-secondary">Chưa có</span>
+            }
+        </div>
+    </div>
+
+    <!-- Temporary Residence -->
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card p-4 h-100">
+            <div class="d-flex align-items-center mb-3">
+                <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-geo-alt fs-3 text-info"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">Giấy xác nhận tạm trú</h6>
+                    <small class="text-muted">CT08</small>
+                </div>
+            </div>
+            @if (tempResidences.Any())
+            {
+                foreach (var record in tempResidences)
+                {
+                    <div class="border rounded p-2 mb-2">
+                        <div class="fw-medium small">@record.Address</div>
+                        <small class="text-muted">
+                            @record.StartDate.ToString("dd/MM/yyyy") - @record.EndDate.ToString("dd/MM/yyyy")
+                        </small>
+                        <div class="mt-2">
+                            <span class="badge bg-success">Đang hiệu lực</span>
+                            <small class="text-muted ms-2">@record.RegistrationNumber</small>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <span class="badge bg-secondary">Chưa có</span>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Completed Applications Section -->
+@if (completedApps.Any())
+{
+    <div class="glass-card p-4 mt-4">
+        <h5 class="fw-bold mb-3">Hồ sơ đã hoàn thành</h5>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Mã hồ sơ</th>
+                        <th>Dịch vụ</th>
+                        <th>Ngày hoàn thành</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var app in completedApps)
+                    {
+                        <tr>
+                            <td class="fw-bold">#@app.Id.ToString("D5")</td>
+                            <td>@app.ServiceType?.Name</td>
+                            <td>@app.LastModifiedDate?.ToString("dd/MM/yyyy")</td>
+                            <td><span class="badge bg-success">@app.Status</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<div class="glass-card p-4 mt-4">
+    <h5 class="fw-bold mb-3">Thông tin</h5>
+    <p class="text-muted mb-0">
+        <i class="bi bi-info-circle me-2"></i>
+        Sau khi các hồ sơ của bạn được phê duyệt và cấp giấy tờ điện tử, chúng sẽ tự động hiển thị tại đây.
+        Bạn có thể tải xuống hoặc chia sẻ bản điện tử khi cần.
+    </p>
+</div>

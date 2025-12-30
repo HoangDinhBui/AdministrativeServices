@@ -31,6 +31,11 @@
                                     <a class="nav-link" asp-controller="Citizen" asp-action="Applications">Hồ sơ của tôi</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Citizen" asp-action="ConfirmationRequests">
+                                        <i class="bi bi-bell"></i> Xác nhận
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" asp-controller="Citizen" asp-action="Wallet">Ví giấy tờ</a>
                                 </li>
                             }
@@ -59,7 +64,7 @@
                                     Chào, @(User.Identity.Name)
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end glass-card border-0 shadow-sm">
-                                    <li><a class="dropdown-item" href="#">Thông tin cá nhân</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Thông tin cá nhân</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">

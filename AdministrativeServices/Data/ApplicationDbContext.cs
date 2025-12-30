@@ -23,6 +23,8 @@ namespace AdministrativeServices.Data
         public DbSet<BirthRecord> BirthRecords { get; set; }
         public DbSet<HouseholdRegistry> HouseholdRegistries { get; set; }
         public DbSet<HouseholdMember> HouseholdMembers { get; set; }
+        public DbSet<TemporaryResidence> TemporaryResidences { get; set; }
+        public DbSet<ConfirmationRequest> ConfirmationRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

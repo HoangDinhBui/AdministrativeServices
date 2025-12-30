@@ -254,17 +254,36 @@ namespace AdministrativeServices.Controllers
                 SubmittedAt = DateTime.UtcNow.ToString("o")
             };
 
+            // Check if spouse has an account in the system
+            var spouseUser = await _context.Users.FirstOrDefaultAsync(u => u.CCCD == spouseCCCD);
+            bool requiresSpouseConfirmation = spouseUser != null;
+
             var application = new Application
             {
                 CitizenId = userId,
                 ServiceTypeId = serviceTypeId,
                 ContentJson = JsonSerializer.Serialize(formData),
-                Status = ApplicationStatus.Submitted,
+                Status = requiresSpouseConfirmation ? ApplicationStatus.AwaitingConfirmation : ApplicationStatus.Submitted,
                 CreatedDate = DateTime.UtcNow
             };
 
             _context.Applications.Add(application);
             await _context.SaveChangesAsync();
+
+            // Create confirmation request if spouse has account
+            if (requiresSpouseConfirmation && spouseUser != null)
+            {
+                var confirmRequest = new ConfirmationRequest
+                {
+                    ApplicationId = application.Id,
+                    RequesterId = userId,
+                    TargetUserId = spouseUser.Id,
+                    TargetCCCD = spouseCCCD,
+                    RequestType = "Marriage"
+                };
+                _context.ConfirmationRequests.Add(confirmRequest);
+                await _context.SaveChangesAsync();
+            }
 
             // Handle file uploads
             if (files != null && files.Count > 0)
@@ -296,16 +315,27 @@ namespace AdministrativeServices.Controllers
             }
 
             // Add history
+            string historyNote = requiresSpouseConfirmation 
+                ? $"Hồ sơ đăng ký kết hôn đã được nộp. Đang chờ {spouseName} xác nhận."
+                : "Hồ sơ đăng ký kết hôn đã được nộp trực tuyến";
+
             _context.ApplicationHistories.Add(new ApplicationHistory
             {
                 ApplicationId = application.Id,
-                Status = ApplicationStatus.Submitted,
-                Note = "Hồ sơ đăng ký kết hôn đã được nộp trực tuyến",
+                Status = application.Status,
+                Note = historyNote,
                 ChangedById = userId
             });
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Đã nộp hồ sơ đăng ký kết hôn thành công!";
+            if (requiresSpouseConfirmation)
+            {
+                TempData["SuccessMessage"] = $"Đã nộp hồ sơ! Yêu cầu xác nhận đã được gửi tới {spouseName}.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "Đã nộp hồ sơ đăng ký kết hôn thành công!";
+            }
             return RedirectToAction("Applications", "Citizen");
         }
 

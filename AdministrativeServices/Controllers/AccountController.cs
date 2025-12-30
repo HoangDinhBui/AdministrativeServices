@@ -77,5 +77,38 @@ namespace AdministrativeServices.Controllers
         }
 
         public IActionResult AccessDenied() => View();
+
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+            return View(user);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(string fullName, string cccd, string phone, string address)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            user.FullName = fullName;
+            user.CCCD = cccd;
+            user.PhoneNumber = phone;
+            user.Address = address;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi cập nhật thông tin.";
+            }
+
+            return RedirectToAction(nameof(Profile));
+        }
     }
 }

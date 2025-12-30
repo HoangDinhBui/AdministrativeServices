@@ -53,7 +53,7 @@
                                 <span class="badge @badgeClass">@item.Status</span>
                             </td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                                <a asp-controller="Citizen" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Chi tiết</a>
                             </td>
                         </tr>
                     }

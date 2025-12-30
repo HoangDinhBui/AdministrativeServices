@@ -1,0 +1,84 @@
+@model AdministrativeServices.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+
+<div class="max-width-800 mx-auto">
+    <div class="mb-4">
+        <h2 class="fw-bold">Thông tin cá nhân</h2>
+        <p class="text-muted">Xem và cập nhật thông tin tài khoản của bạn.</p>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="glass-card p-4 mb-4">
+        <div class="row align-items-center mb-4">
+            <div class="col-auto">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 2rem;">
+                    @Model.FullName?.Substring(0, 1).ToUpper()
+                </div>
+            </div>
+            <div class="col">
+                <h4 class="fw-bold mb-1">@Model.FullName</h4>
+                <span class="text-muted">@Model.Email</span>
+            </div>
+        </div>
+
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted">Email:</dt>
+            <dd class="col-sm-8">@Model.Email</dd>
+
+            <dt class="col-sm-4 text-muted">Số CCCD:</dt>
+            <dd class="col-sm-8">@(Model.CCCD ?? "Chưa cập nhật")</dd>
+
+            <dt class="col-sm-4 text-muted">Số điện thoại:</dt>
+            <dd class="col-sm-8">@(Model.PhoneNumber ?? "Chưa cập nhật")</dd>
+
+            <dt class="col-sm-4 text-muted">Địa chỉ:</dt>
+            <dd class="col-sm-8">@(Model.Address ?? "Chưa cập nhật")</dd>
+        </dl>
+    </div>
+
+    <div class="glass-card p-4">
+        <h5 class="fw-bold mb-3">Cập nhật thông tin</h5>
+        <form asp-action="UpdateProfile" method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Họ và tên</label>
+                    <input name="fullName" class="form-control" value="@Model.FullName" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Số CCCD</label>
+                    <input name="cccd" class="form-control" value="@Model.CCCD" placeholder="012345678901" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Số điện thoại</label>
+                    <input name="phone" type="tel" class="form-control" value="@Model.PhoneNumber" placeholder="0912345678" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Địa chỉ</label>
+                    <input name="address" class="form-control" value="@Model.Address" placeholder="Số nhà, đường, phường..." />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-4">Lưu thay đổi</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .max-width-800 { max-width: 800px; }
+</style>

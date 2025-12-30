@@ -1,0 +1,100 @@
+@model IEnumerable<AdministrativeServices.Models.ConfirmationRequest>
+
+@{
+    ViewData["Title"] = "Yêu cầu xác nhận";
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold">Yêu cầu xác nhận</h2>
+    <p class="text-muted">Các yêu cầu đang chờ bạn xác nhận (kết hôn, tạm trú, v.v.)</p>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="glass-card p-4">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-3"><i class="bi bi-inbox fs-1 text-muted"></i></div>
+            <p class="text-muted">Không có yêu cầu xác nhận nào.</p>
+        </div>
+    }
+    else
+    {
+        foreach (var req in Model)
+        {
+            <div class="border rounded p-4 mb-3">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        @if (req.RequestType == "Marriage")
+                        {
+                            <span class="badge bg-danger fs-6 mb-2"><i class="bi bi-heart-fill"></i> Yêu cầu kết hôn</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-info fs-6 mb-2"><i class="bi bi-house-fill"></i> Xác nhận tạm trú</span>
+                        }
+                        <h5 class="mb-1">@req.Requester?.FullName đã gửi yêu cầu</h5>
+                        <p class="text-muted small mb-0">Ngày gửi: @req.CreatedDate.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                    <span class="badge bg-warning">Đang chờ</span>
+                </div>
+
+                @if (req.Application != null)
+                {
+                    <div class="bg-light rounded p-3 mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="small text-muted">Dịch vụ:</label>
+                                <div class="fw-medium">@req.Application.ServiceType?.Name</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted">Mã hồ sơ:</label>
+                                <div class="fw-medium">#@req.ApplicationId.ToString("D5")</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (req.RequestType == "Marriage")
+                {
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>@req.Requester?.FullName</strong> muốn đăng ký kết hôn với bạn. 
+                        Nếu bạn đồng ý, hãy nhấn nút "Xác nhận đồng ý".
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <form asp-action="ConfirmMarriage" method="post" class="d-inline">
+                            <input type="hidden" name="requestId" value="@req.Id" />
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Xác nhận đồng ý kết hôn
+                            </button>
+                        </form>
+
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="collapse" data-bs-target="#reject-@req.Id">
+                            <i class="bi bi-x-circle"></i> Từ chối
+                        </button>
+                    </div>
+
+                    <div class="collapse mt-3" id="reject-@req.Id">
+                        <form asp-action="RejectConfirmation" method="post">
+                            <input type="hidden" name="requestId" value="@req.Id" />
+                            <div class="mb-2">
+                                <label class="form-label">Lý do từ chối:</label>
+                                <textarea name="reason" class="form-control" rows="2" required placeholder="Nhập lý do..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-danger btn-sm">Xác nhận từ chối</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>

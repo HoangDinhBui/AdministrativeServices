@@ -345,6 +345,55 @@ namespace AdministrativeServices.Migrations
                     b.ToTable("Citizens");
                 });
 
+            modelBuilder.Entity("AdministrativeServices.Models.ConfirmationRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RejectReason")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RequestType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RequesterId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ResponseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TargetCCCD")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TargetUserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.HasIndex("RequesterId");
+
+                    b.HasIndex("TargetUserId");
+
+                    b.ToTable("ConfirmationRequests");
+                });
+
             modelBuilder.Entity("AdministrativeServices.Models.HouseholdMember", b =>
                 {
                     b.Property<int>("Id")
@@ -483,6 +532,98 @@ namespace AdministrativeServices.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ServiceTypes");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.TemporaryResidence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CitizenCCCD")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("CitizenId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CitizenName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CitizenPhone")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("ExpirationNotified")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OwnerCCCD")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("OwnerConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("OwnerConfirmedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OwnerName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OwnerPhone")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RegistrationNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RegistrationType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SignedByOfficialId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("SignedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ward")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CitizenId");
+
+                    b.ToTable("TemporaryResidences");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -710,6 +851,33 @@ namespace AdministrativeServices.Migrations
                     b.Navigation("Mother");
                 });
 
+            modelBuilder.Entity("AdministrativeServices.Models.ConfirmationRequest", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.Application", "Application")
+                        .WithMany()
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AdministrativeServices.Models.ApplicationUser", "Requester")
+                        .WithMany()
+                        .HasForeignKey("RequesterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AdministrativeServices.Models.ApplicationUser", "TargetUser")
+                        .WithMany()
+                        .HasForeignKey("TargetUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+
+                    b.Navigation("Requester");
+
+                    b.Navigation("TargetUser");
+                });
+
             modelBuilder.Entity("AdministrativeServices.Models.HouseholdMember", b =>
                 {
                     b.HasOne("AdministrativeServices.Models.Citizen", "Citizen")
@@ -757,6 +925,15 @@ namespace AdministrativeServices.Migrations
                     b.Navigation("Spouse1");
 
                     b.Navigation("Spouse2");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.TemporaryResidence", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.Citizen", "Citizen")
+                        .WithMany()
+                        .HasForeignKey("CitizenId");
+
+                    b.Navigation("Citizen");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

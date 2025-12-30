@@ -85,6 +85,13 @@ namespace AdministrativeServices.Controllers
                 await CreateMarriageRecordFromApplication(application, currentUserId);
             }
 
+            // If this is a temporary residence registration, create record
+            var tempResService = await _context.ServiceTypes.FirstOrDefaultAsync(s => s.Name == "Đăng ký tạm trú");
+            if (tempResService != null && application.ServiceTypeId == tempResService.Id)
+            {
+                await CreateTemporaryResidenceFromApplication(application, currentUserId);
+            }
+
             TempData["SuccessMessage"] = $"Đã ký duyệt thành công hồ sơ #{id:D5}!";
             return RedirectToAction(nameof(Queue));
         }
@@ -238,6 +245,42 @@ namespace AdministrativeServices.Controllers
                 };
 
                 _context.MarriageRecords.Add(marriageRecord);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                // Log error but don't fail the signing process
+            }
+        }
+
+        private async Task CreateTemporaryResidenceFromApplication(Application application, string? signedById)
+        {
+            try
+            {
+                var formData = JsonSerializer.Deserialize<JsonElement>(application.ContentJson);
+
+                var tempResidence = new TemporaryResidence
+                {
+                    RegistrationNumber = $"TT-{DateTime.Now.Year}-{application.Id:D6}",
+                    CitizenCCCD = formData.GetProperty("ApplicantCCCD").GetString() ?? "",
+                    CitizenName = formData.GetProperty("ApplicantName").GetString() ?? "",
+                    CitizenPhone = formData.GetProperty("ApplicantPhone").GetString() ?? "",
+                    Province = formData.GetProperty("Province").GetString() ?? "",
+                    District = formData.GetProperty("District").GetString() ?? "",
+                    Ward = formData.GetProperty("Ward").GetString() ?? "",
+                    Address = formData.GetProperty("FullAddress").GetString() ?? "",
+                    StartDate = DateTime.Parse(formData.GetProperty("StartDate").GetString() ?? DateTime.Now.ToString()),
+                    EndDate = DateTime.Parse(formData.GetProperty("EndDate").GetString() ?? DateTime.Now.AddYears(2).ToString()),
+                    OwnerCCCD = formData.GetProperty("OwnerCCCD").GetString() ?? "",
+                    OwnerName = formData.GetProperty("OwnerName").GetString() ?? "",
+                    OwnerPhone = formData.GetProperty("OwnerPhone").GetString() ?? "",
+                    RegistrationType = formData.GetProperty("RegistrationType").GetString() ?? "New",
+                    Status = "Active",
+                    SignedByOfficialId = signedById,
+                    SignedDate = DateTime.UtcNow
+                };
+
+                _context.TemporaryResidences.Add(tempResidence);
                 await _context.SaveChangesAsync();
             }
             catch

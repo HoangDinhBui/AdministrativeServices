@@ -47,7 +47,7 @@
             <div class="list-group list-group-flush">
                 @foreach (var file in Model.Attachments)
                 {
-                    <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <a href="@file.FilePath" target="_blank" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                         <div>
                             <i class="bi bi-file-earmark-pdf text-danger me-2"></i> @file.FileName
                         </div>
@@ -99,7 +99,7 @@
 
             <div class="mt-4 pt-3 border-top">
                 <p class="small text-muted"><i class="bi bi-info-circle"></i> Cán bộ có thể tra cứu thông tin dân cư tại hệ thống định danh quốc gia trước khi phê duyệt.</p>
-                <button class="btn btn-sm btn-outline-info w-100">Tra cứu Dữ liệu Dân cư</button>
+                <a asp-action="Search" class="btn btn-sm btn-outline-info w-100">Tra cứu Dữ liệu Dân cư</a>
             </div>
         </div>
     </div>

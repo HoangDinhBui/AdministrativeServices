@@ -148,4 +148,50 @@ namespace AdministrativeServices.Models
         public DateTime? LeaveDate { get; set; }
         public bool IsCurrentMember { get; set; } = true;
     }
+
+    /// <summary>
+    /// Temporary Residence Registration (Đăng ký tạm trú)
+    /// </summary>
+    public class TemporaryResidence
+    {
+        public int Id { get; set; }
+        public string RegistrationNumber { get; set; } = string.Empty;
+        
+        // Citizen info
+        public string CitizenCCCD { get; set; } = string.Empty;
+        public string CitizenName { get; set; } = string.Empty;
+        public string CitizenPhone { get; set; } = string.Empty;
+        public int? CitizenId { get; set; }
+        public Citizen? Citizen { get; set; }
+        
+        // Address
+        public string Address { get; set; } = string.Empty;
+        public string Ward { get; set; } = string.Empty;
+        public string District { get; set; } = string.Empty;
+        public string Province { get; set; } = string.Empty;
+        
+        // Duration
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; } // Max 2 years
+        
+        // Owner/Landlord info
+        public string OwnerCCCD { get; set; } = string.Empty;
+        public string OwnerName { get; set; } = string.Empty;
+        public string OwnerPhone { get; set; } = string.Empty;
+        public bool OwnerConfirmed { get; set; } = false;
+        public DateTime? OwnerConfirmedDate { get; set; }
+        
+        // Registration type: New, Extend, Update
+        public string RegistrationType { get; set; } = "New";
+        
+        // Status: Active, Expired, Cancelled
+        public string Status { get; set; } = "Active";
+        
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public string? SignedByOfficialId { get; set; }
+        public DateTime? SignedDate { get; set; }
+        
+        // For expiration notification
+        public bool ExpirationNotified { get; set; } = false;
+    }
 }

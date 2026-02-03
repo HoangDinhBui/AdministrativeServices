@@ -1,48 +1,201 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿/* =============================================
+   _Layout.cshtml.css - Premium Glassmorphism Navbar 2026
+   GATEWAY Project
+   ============================================= */
 
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
-
-a {
-  color: #0077cc;
-}
-
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+/* Reset & base */
+:root {
+    --primary:        #2563eb;           /* Màu xanh dương chính - hiện đại hơn */
+    --primary-dark:   #1d4ed8;
+    --primary-light:  #3b82f6;
+    --primary-glow:   rgba(37, 99, 235, 0.18);
+    
+    --glass-bg:       rgba(255, 255, 255, 0.78);
+    --glass-border:   rgba(255, 255, 255, 0.22);
+    --glass-blur:     blur(16px);
+    
+    --text-primary:   #0f172a;
+    --text-secondary: #475569;
+    
+    --shadow-sm:      0 6px 20px rgba(0, 0, 0, 0.08);
+    --shadow-md:      0 12px 32px rgba(0, 0, 0, 0.10);
+    --shadow-hover:   0 16px 40px rgba(37, 99, 235, 0.22);
+    
+    --transition:     all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --radius:         12px;
 }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+.navbar-modern {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) saturate(160%);
+    -webkit-backdrop-filter: var(--glass-blur) saturate(160%);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition), background 0.4s ease;
+    padding: 1.1rem 0 !important;
+    z-index: 1030;
 }
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+.navbar-modern.scrolled {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: var(--shadow-md);
+    padding: 0.9rem 0 !important; /* thu gọn nhẹ khi scroll */
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+/* Brand */
+.navbar-brand {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 1.55rem;
+    letter-spacing: -1.1px;
+    background: linear-gradient(100deg, var(--primary), var(--primary-light) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: var(--transition);
 }
+
+.navbar-brand:hover {
+    transform: translateY(-1px) scale(1.04);
+    filter: brightness(1.08);
+}
+
+/* Nav links */
+.nav-link {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    font-size: 0.96rem;
+    padding: 0.55rem 1.25rem !important;
+    border-radius: var(--radius);
+    position: relative;
+    transition: var(--transition);
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--primary) !important;
+    background: var(--primary-glow) !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0.35rem;
+    left: 50%;
+    width: 0;
+    height: 2.8px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    border-radius: 4px;
+    transform: translateX(-50%);
+    transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 60%;
+}
+
+/* Dropdown */
+.dropdown-menu {
+    border: none !important;
+    border-radius: 14px !important;
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-md) !important;
+    margin-top: 0.6rem !important;
+    padding: 0.5rem 0.4rem;
+    min-width: 220px;
+}
+
+.dropdown-item {
+    border-radius: 10px;
+    padding: 0.65rem 1.2rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.dropdown-item:hover {
+    background: rgba(37, 99, 235, 0.09) !important;
+    color: var(--primary);
+    transform: translateX(4px);
+}
+
+/* Glow button */
+.btn-primary.glow-btn {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    border: none;
+    font-weight: 700;
+    padding: 0.75rem 1.6rem;
+    border-radius: 12px;
+    color: white;
+    box-shadow: 0 6px 24px var(--primary-glow);
+    transition: var(--transition);
+}
+
+.btn-primary.glow-btn:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 12px 36px var(--primary-glow);
+}
+
+/* Bell icon animation (nếu có thông báo) */
+.has-notification .bi-bell {
+    animation: bell-ring 2.2s infinite;
+}
+
+@keyframes bell-ring {
+    0%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(-14deg) scale(1.12); }
+    20% { transform: rotate(12deg) scale(1.12); }
+    30% { transform: rotate(-8deg) scale(1.06); }
+    40% { transform: rotate(8deg) scale(1.06); }
+    50% { transform: rotate(0deg) scale(1); }
+}
+
+/* Mobile */
+@media (max-width: 575.98px) {
+    .navbar-modern {
+        padding: 0.9rem 0 !important;
+    }
+    .nav-link {
+        padding: 1rem 1.6rem !important;
+        font-size: 1.05rem;
+    }
+    .navbar-nav {
+        padding: 1.2rem 0;
+    }
+    .glow-btn {
+        width: 100%;
+        margin: 0.8rem 0 0.4rem !important;
+    }
+}
+
+/* Fix navbar height khi dùng logo lớn */
+.navbar {
+    min-height: 90px;          /* Đủ chỗ cho logo 80px + padding */
+}
+
+.navbar-brand img {
+    max-height: 80px;          /* Giới hạn tối đa */
+    width: auto;               /* Giữ tỷ lệ */
+    object-fit: contain;       /* Không bị méo */
+}
+
+/* Nếu dùng glassmorphism (navbar-modern) */
+.navbar-modern {
+    min-height: 90px !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+/* Mobile: thu nhỏ logo để tránh vỡ */
+@media (max-width: 575.98px) {
+    .navbar-brand img {
+        max-height: 50px;      /* Nhỏ hơn trên mobile */
+    }
+    .navbar {
+        min-height: 70px;
+    }
+}
+

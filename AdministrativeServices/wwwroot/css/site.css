@@ -1,3 +1,6 @@
+/* =========================
+   THEME VARIABLES
+========================= */
 :root {
   --primary-color: #2563eb;
   --primary-hover: #1d4ed8;
@@ -7,6 +10,9 @@
   --glass-border: rgba(255, 255, 255, 0.3);
 }
 
+/* =========================
+   BASE
+========================= */
 body {
   background: var(--bg-gradient);
   min-height: 100vh;
@@ -14,21 +20,39 @@ body {
   color: #1e293b;
 }
 
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-}
-
+/* =========================
+   NAVBAR
+========================= */
 .navbar {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--glass-border);
 }
 
+.nav-link {
+  font-weight: 500;
+  color: #475569;
+}
+
+.nav-link:hover {
+  color: var(--primary-color);
+}
+
+/* =========================
+   GLASS CARD
+========================= */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+}
+
+/* =========================
+   BUTTONS
+========================= */
 .btn-primary {
   background: var(--primary-color);
   border: none;
@@ -42,23 +66,284 @@ body {
   transform: translateY(-1px);
 }
 
+.btn-gradient {
+  background: linear-gradient(135deg,
+      var(--primary-color),
+      var(--primary-hover));
+  border: none;
+  color: #fff;
+}
+
+.btn-gradient:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+.btn-outline-modern {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   FORMS
+========================= */
 .form-control {
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 0.5rem;
 }
 
+/* =========================
+   AUTH
+========================= */
 .auth-container {
   max-width: 450px;
   margin: 5rem auto;
   padding: 2.5rem;
 }
 
-.nav-link {
-  font-weight: 500;
-  color: #475569;
+/* =========================
+   HERO SECTION
+========================= */
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
-.nav-link:hover {
+.text-gradient {
+  background: linear-gradient(135deg,
+      var(--primary-color),
+      var(--primary-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: #64748b;
+}
+
+.hero-card {
+  height: 280px;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg,
+      var(--primary-color),
+      var(--primary-hover));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(37, 99, 235, 0.35);
+}
+
+/* =========================
+   SERVICE CARD
+========================= */
+.service-card {
+  height: 100%;
+  padding: 28px;
+  border-radius: 1.25rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  transition: all 0.3s ease;
+}
+
+.service-card i {
+  font-size: 2rem;
   color: var(--primary-color);
 }
+
+.service-card h5 {
+  margin-top: 12px;
+  font-weight: 700;
+}
+
+.service-card p {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.service-card a {
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--primary-color);
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   BACKGROUND IMAGE (BLUR)
+========================= */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(
+      rgba(248, 250, 252, 0.65),
+      rgba(248, 250, 252, 0.65)
+    ),
+    url("/images/anhnen.jpg") center / cover no-repeat;
+  filter: blur(8px);
+  z-index: -1;
+}
+
+/* =========================
+   HERO IMAGE ONLY
+========================= */
+
+.hero-image {
+    height: 300px;
+    border-radius: 28px;
+    background: url("/images/homepic.png") center / cover no-repeat;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+}
+
+/* Wrapper */
+.hero-actions .btn {
+    position: relative;
+    font-weight: 600;
+    border-radius: 14px;
+    transition: all 0.35s ease;
+    overflow: hidden;
+}
+
+/* ===== NÚT CHÍNH: Bắt đầu ngay ===== */
+.btn-gradient-modern {
+    color: #fff;
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    border: none;
+    box-shadow:
+        0 10px 25px rgba(79, 70, 229, 0.35),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+/* Hiệu ứng ánh sáng chạy */
+.btn-gradient-modern::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.45),
+        transparent
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.btn-gradient-modern:hover::before {
+    transform: translateX(100%);
+}
+
+.btn-gradient-modern:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 16px 40px rgba(79, 70, 229, 0.45);
+}
+
+/* ===== NÚT PHỤ: Đăng nhập ===== */
+.btn-outline-modern {
+    color: #334155;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1.5px solid rgba(99, 102, 241, 0.35);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.btn-outline-modern:hover {
+    color: #4f46e5;
+    background: rgba(255, 255, 255, 0.85);
+    border-color: #6366f1;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(79, 70, 229, 0.2);
+}
+
+/* Active (click) */
+.hero-actions .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.service-card {
+    position: relative;
+    height: 100%;
+    padding: 28px 26px;
+    border-radius: 20px;
+    background:
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.06);
+    transition: all 0.35s ease;
+    overflow: hidden;
+}
+
+/* vùng xanh nhỏ, tập trung */
+.service-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        160px circle at var(--x, 50%) var(--y, 50%),
+        rgba(37, 99, 235, 0.22),
+        transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.service-card:hover::before {
+    opacity: 1;
+}
+
+.service-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(37, 99, 235, 0.25);
+    box-shadow:
+        0 22px 50px rgba(37, 99, 235, 0.18);
+}
+
+
+/* title */
+.service-card h5 {
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #0f172a;
+}
+
+/* description */
+.service-card p {
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin-bottom: 18px;
+}
+
+/* link */
+.service-card a {
+    font-weight: 600;
+    color: #2563eb;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.service-card a span {
+    transition: transform 0.3s ease;
+}
+
+.service-card a:hover span {
+    transform: translateX(4px);
+}
+
+

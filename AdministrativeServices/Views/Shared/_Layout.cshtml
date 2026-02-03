@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,14 +9,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
+
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light mb-4 py-3">
+        <nav class="navbar navbar-expand-sm navbar-light mb-4 py-1">
             <div class="container">
-                <a class="navbar-brand fw-bold text-primary" asp-controller="Home" asp-action="Index">GATEWAY</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo.png" alt="GATEWAY - Hệ thống Dịch vụ Công" height="45"
+                        class="d-inline-block align-text-top">
+                    <!-- Nếu muốn giữ tên text nhỏ bên cạnh logo (optional) -->
+                    <!-- <span class="ms-2 fw-bold text-primary d-none d-md-inline">GATEWAY</span> -->
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -60,12 +69,16 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle fw-medium" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <a class="nav-link dropdown-toggle fw-medium" href="#" id="userDropdown" role="button"
+                                    data-bs-toggle="dropdown">
                                     Chào, @(User.Identity.Name)
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end glass-card border-0 shadow-sm">
-                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Thông tin cá nhân</a></li>
-                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Thông tin cá
+                                            nhân</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
                                     <li>
                                         <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                             <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
@@ -80,7 +93,8 @@
                                 <a class="nav-link fw-medium" asp-controller="Account" asp-action="Login">Đăng nhập</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-primary ms-lg-2" asp-controller="Account" asp-action="Register">Tham gia ngay</a>
+                                <a class="btn btn-primary ms-lg-2" asp-controller="Account" asp-action="Register">Tham gia
+                                    ngay</a>
                             </li>
                         }
                     </ul>
@@ -96,12 +110,26 @@
 
     <footer class="footer text-muted py-4 mt-5">
         <div class="container text-center">
-            &copy; 2025 - Hệ thống Quản lý Dịch vụ Hành chính - <a asp-area="" asp-controller="Home" asp-action="Privacy">Quyền riêng tư</a>
+            &copy; 2025 - Hệ thống Quản lý Dịch vụ Hành chính - <a asp-area="" asp-controller="Home"
+                asp-action="Privacy">Quyền riêng tư</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                card.style.setProperty('--x', x + 'px');
+                card.style.setProperty('--y', y + 'px');
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Xác thực OTP";
+}
+
+<div class="glass-card auth-container">
+    <h2 class="text-center mb-4">Xác thực OTP</h2>
+    <div class="alert alert-info border-0 bg-info bg-opacity-10 text-center">
+        Mã xác thực đã được gửi đến số điện thoại <strong>@ViewBag.PhoneNumber</strong>
+    </div>
+
+    <form asp-action="VerifyOtp" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        
+        <div class="mb-4 text-center">
+            <label class="form-label fw-bold">Nhập mã OTP (6 số)</label>
+            <div class="d-flex justify-content-center">
+                <input name="otp" class="form-control text-center fs-2 tracking-wide" placeholder="000000" maxlength="6" style="width: 200px; letter-spacing: 5px;" required pattern="[0-9]{6}" autofocus />
+            </div>
+            <div class="form-text mt-2">Mã mẫu: 123456</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mb-3">Xác thực</button>
+        
+        <div class="text-center">
+            <small class="text-muted">Không nhận được mã?</small> 
+            <a href="#" class="text-decoration-none">Gửi lại (60s)</a>
+        </div>
+    </form>
+</div>

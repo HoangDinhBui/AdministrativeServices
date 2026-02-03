@@ -103,10 +103,13 @@ namespace AdministrativeServices.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Address")
+                    b.Property<string>("CCCD")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CCCD")
+                    b.Property<int?>("CitizenProfileId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("City")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -114,6 +117,9 @@ namespace AdministrativeServices.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Department")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("District")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -125,6 +131,9 @@ namespace AdministrativeServices.Migrations
 
                     b.Property<string>("FullName")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("IdentityStatus")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
@@ -155,6 +164,9 @@ namespace AdministrativeServices.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Street")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
 
@@ -162,7 +174,12 @@ namespace AdministrativeServices.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Ward")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CitizenProfileId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -316,6 +333,10 @@ namespace AdministrativeServices.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Hometown")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("MaritalStatus")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -324,6 +345,10 @@ namespace AdministrativeServices.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Nationality")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PermanentAddress")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -468,6 +493,91 @@ namespace AdministrativeServices.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("HouseholdRegistries");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.IdentityAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("IdentityVerificationRequestId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityVerificationRequestId");
+
+                    b.ToTable("IdentityAttachments");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.IdentityVerificationRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("BackImage")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CCCD")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FrontImage")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PortraitImage")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProcessedByUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ProcessedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RejectReason")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessedByUserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("IdentityVerificationRequests");
                 });
 
             modelBuilder.Entity("AdministrativeServices.Models.MarriageRecord", b =>
@@ -796,6 +906,15 @@ namespace AdministrativeServices.Migrations
                     b.Navigation("ChangedBy");
                 });
 
+            modelBuilder.Entity("AdministrativeServices.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.Citizen", "CitizenProfile")
+                        .WithMany()
+                        .HasForeignKey("CitizenProfileId");
+
+                    b.Navigation("CitizenProfile");
+                });
+
             modelBuilder.Entity("AdministrativeServices.Models.Attachment", b =>
                 {
                     b.HasOne("AdministrativeServices.Models.Application", null)
@@ -908,6 +1027,34 @@ namespace AdministrativeServices.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("AdministrativeServices.Models.IdentityAttachment", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.IdentityVerificationRequest", "Request")
+                        .WithMany("Attachments")
+                        .HasForeignKey("IdentityVerificationRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Request");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.IdentityVerificationRequest", b =>
+                {
+                    b.HasOne("AdministrativeServices.Models.ApplicationUser", "ProcessedBy")
+                        .WithMany()
+                        .HasForeignKey("ProcessedByUserId");
+
+                    b.HasOne("AdministrativeServices.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProcessedBy");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AdministrativeServices.Models.MarriageRecord", b =>
                 {
                     b.HasOne("AdministrativeServices.Models.Citizen", "Spouse1")
@@ -1006,6 +1153,11 @@ namespace AdministrativeServices.Migrations
             modelBuilder.Entity("AdministrativeServices.Models.HouseholdRegistry", b =>
                 {
                     b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("AdministrativeServices.Models.IdentityVerificationRequest", b =>
+                {
+                    b.Navigation("Attachments");
                 });
 #pragma warning restore 612, 618
         }

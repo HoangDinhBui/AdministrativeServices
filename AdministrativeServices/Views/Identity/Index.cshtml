@@ -1,0 +1,93 @@
+@model AdministrativeServices.Models.IdentityVerificationRequest
+@{
+    ViewData["Title"] = "Xác thực danh tính";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="glass-card">
+            <h2 class="text-center mb-4">Xác thực danh tính (KYC)</h2>
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Vui lòng cung cấp hình ảnh CCCD/CMND và ảnh chân dung để xác thực tài khoản.
+                Dữ liệu của bạn sẽ được bảo mật và chỉ dùng cho mục đích đối chiếu.
+            </div>
+
+            <form asp-action="Upload" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Số Căn cước công dân / CMND</label>
+                    <input name="cccd" class="form-control" required placeholder="Nhập số CCCD (12 số)" pattern="[0-9]{9,12}" />
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Ảnh/PDF mặt trước CCCD</label>
+                        <input type="file" name="frontImage" class="form-control" accept="image/*,.pdf" required onchange="previewFile(this, 'front-preview-container')" />
+                        <div id="front-preview-container" class="mt-2 text-center"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Ảnh/PDF mặt sau CCCD</label>
+                        <input type="file" name="backImage" class="form-control" accept="image/*,.pdf" required onchange="previewFile(this, 'back-preview-container')" />
+                        <div id="back-preview-container" class="mt-2 text-center"></div>
+                    </div>
+                </div>
+
+                <div class="mb-4 text-center">
+                    <label class="form-label fw-bold">Ảnh chân dung (Selfie)</label>
+                    <div class="d-flex justify-content-center">
+                         <div style="width: 250px;">
+                            <input type="file" name="portraitImage" class="form-control" accept="image/*" required onchange="previewFile(this, 'portrait-preview-container')" />
+                         </div>
+                    </div>
+                    <div id="portrait-preview-container" class="mt-2"></div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-shield-check me-2"></i> Gửi yêu cầu xác thực
+                    </button>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Bỏ qua</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewFile(input, containerId) {
+            var container = document.getElementById(containerId);
+            container.innerHTML = ''; // Clear previous
+
+            if (input.files && input.files[0]) {
+                var file = input.files[0];
+                
+                if (file.type === 'application/pdf') {
+                    // PDF Preview Icon
+                    var msg = document.createElement('div');
+                    msg.className = 'alert alert-light border d-inline-block';
+                    msg.innerHTML = '<i class="bi bi-file-earmark-pdf text-danger fs-3"></i><br><small>' + file.name + '</small>';
+                    container.appendChild(msg);
+                } else if (file.type.startsWith('image/')) {
+                    // Image Preview
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'img-fluid rounded border';
+                        img.style.maxHeight = '150px';
+                        container.appendChild(img);
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    // Other
+                     var msg = document.createElement('div');
+                    msg.innerHTML = '<small class="text-muted">' + file.name + '</small>';
+                    container.appendChild(msg);
+                }
+            }
+        }
+    </script>
+}

@@ -49,7 +49,7 @@
             <dd class="col-sm-8">@(Model.PhoneNumber ?? "Chưa cập nhật")</dd>
 
             <dt class="col-sm-4 text-muted">Địa chỉ:</dt>
-            <dd class="col-sm-8">@(Model.Address ?? "Chưa cập nhật")</dd>
+            <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.FullAddress) ? "Chưa cập nhật" : Model.FullAddress)</dd>
         </dl>
     </div>
 
@@ -70,8 +70,8 @@
                     <input name="phone" type="tel" class="form-control" value="@Model.PhoneNumber" placeholder="0912345678" />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Địa chỉ</label>
-                    <input name="address" class="form-control" value="@Model.Address" placeholder="Số nhà, đường, phường..." />
+                    <label class="form-label">Địa chỉ (Số nhà, Đường)</label>
+                    <input name="address" class="form-control" value="@Model.Street" placeholder="Số nhà, đường..." />
                 </div>
             </div>
             <button type="submit" class="btn btn-primary mt-4">Lưu thay đổi</button>

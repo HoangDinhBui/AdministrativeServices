@@ -25,6 +25,8 @@ namespace AdministrativeServices.Data
         public DbSet<HouseholdMember> HouseholdMembers { get; set; }
         public DbSet<TemporaryResidence> TemporaryResidences { get; set; }
         public DbSet<ConfirmationRequest> ConfirmationRequests { get; set; }
+        public DbSet<IdentityVerificationRequest> IdentityVerificationRequests { get; set; }
+        public DbSet<IdentityAttachment> IdentityAttachments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

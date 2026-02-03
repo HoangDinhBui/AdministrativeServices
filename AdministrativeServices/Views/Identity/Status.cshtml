@@ -1,0 +1,56 @@
+@model AdministrativeServices.Models.IdentityVerificationRequest
+@using AdministrativeServices.Models
+@{
+    ViewData["Title"] = "Trạng thái xác thực";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="glass-card text-center py-5">
+            @if (Model.Status == IdentityVerificationStatus.Verified)
+            {
+                <div class="text-success mb-3">
+                    <i class="bi bi-check-circle-fill display-1"></i>
+                </div>
+                <h2 class="fw-bold text-success mb-3">Đã xác thực thành công</h2>
+                <p class="lead mb-4">Tài khoản của bạn đã được liên kết với dữ liệu công dân quốc gia.</p>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Về trang chủ</a>
+            }
+            else if (Model.Status == IdentityVerificationStatus.Pending)
+            {
+                <div class="text-warning mb-3">
+                    <i class="bi bi-hourglass-split display-1"></i>
+                </div>
+                <h2 class="fw-bold text-warning mb-3">Đang chờ phê duyệt</h2>
+                <p class="lead mb-4">Yêu cầu của bạn đã được gửi lúc <strong>@Model.CreatedDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</strong>.<br/>Vui lòng đợi cán bộ kiểm tra và phê duyệt.</p>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">Về trang chủ</a>
+            }
+            else if (Model.Status == IdentityVerificationStatus.Rejected)
+            {
+                <div class="text-danger mb-3">
+                    <i class="bi bi-x-circle-fill display-1"></i>
+                </div>
+                <h2 class="fw-bold text-danger mb-3">Yêu cầu bị từ chối</h2>
+                <div class="alert alert-danger mx-auto" style="max-width: 400px;">
+                    <strong>Lý do:</strong> @Model.RejectReason
+                </div>
+                <div class="mt-4">
+                     <a asp-action="Index" class="btn btn-primary">Gửi lại yêu cầu</a>
+                </div>
+            }
+             else if (Model.Status == IdentityVerificationStatus.SupplementRequired)
+            {
+                 <div class="text-info mb-3">
+                    <i class="bi bi-info-circle-fill display-1"></i>
+                </div>
+                <h2 class="fw-bold text-info mb-3">Yêu cầu bổ sung thông tin</h2>
+                 <div class="alert alert-info mx-auto" style="max-width: 400px;">
+                    <strong>Yêu cầu:</strong> @Model.RejectReason
+                </div>
+                <div class="mt-4">
+                     <a asp-action="Index" class="btn btn-primary">Cập nhật thông tin</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

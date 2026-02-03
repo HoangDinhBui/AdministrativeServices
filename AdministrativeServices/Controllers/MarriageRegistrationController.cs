@@ -77,7 +77,7 @@ namespace AdministrativeServices.Controllers
                         fromSystem = false, // From user registration, not full citizen record
                         fullName = appUser.FullName,
                         cccd = appUser.CCCD,
-                        address = appUser.Address,
+                        address = appUser.FullAddress,
                         message = "Tìm thấy thông tin từ hồ sơ đăng ký người dùng"
                     });
                 }

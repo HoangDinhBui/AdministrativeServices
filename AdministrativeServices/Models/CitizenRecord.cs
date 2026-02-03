@@ -16,6 +16,8 @@ namespace AdministrativeServices.Models
         public string PlaceOfBirth { get; set; } = string.Empty;
         public string Ethnicity { get; set; } = "Kinh";
         public string Nationality { get; set; } = "Việt Nam";
+        public string Hometown { get; set; } = string.Empty; // Quê quán
+        public string PermanentAddress { get; set; } = string.Empty; // Nơi thường trú
         
         // Marital status: Chưa kết hôn, Đã kết hôn, Ly hôn, Góa
         public string MaritalStatus { get; set; } = "Chưa kết hôn";

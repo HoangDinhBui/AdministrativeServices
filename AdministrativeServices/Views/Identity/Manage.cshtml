@@ -1,0 +1,59 @@
+@model IEnumerable<AdministrativeServices.Models.IdentityVerificationRequest>
+@using AdministrativeServices.Models
+@{
+    ViewData["Title"] = "Quản lý xác thực danh tính";
+}
+
+<div class="glass-card">
+    <h2 class="mb-4">Danh sách yêu cầu xác thực</h2>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Ngày yêu cầu</th>
+                    <th>Người dùng</th>
+                    <th>Email</th>
+                    <th>CCCD (Khai báo)</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.CreatedDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.User?.FullName</td>
+                        <td>@item.User?.Email</td>
+                        <td>@item.CCCD</td>
+                        <td>
+                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                        </td>
+                        <td>
+                            <a asp-action="Review" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                <i class="bi bi-eye"></i> Xem chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    @if (!Model.Any())
+    {
+        <div class="text-center py-4 text-muted">
+            Không có yêu cầu nào đang chờ xử lý.
+        </div>
+    }
+</div>

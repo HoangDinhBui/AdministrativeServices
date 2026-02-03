@@ -35,6 +35,26 @@ public class Program
         {
             app.UseExceptionHandler("/Home/Error");
         }
+
+        // Seed Database
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            try
+            {
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                
+                // Wait for DB creation and seed
+                DbInitializer.Initialize(context, userManager, roleManager).Wait();
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred while seeding the database.");
+            }
+        }
         
         app.UseStaticFiles();
         app.UseRouting();

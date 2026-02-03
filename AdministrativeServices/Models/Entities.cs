@@ -7,10 +7,33 @@ namespace AdministrativeServices.Models
     {
         public string? FullName { get; set; }
         public string? CCCD { get; set; }
-        public string? Address { get; set; }
-        // For Officials
+        
+        // Detailed Address
+        public string? Street { get; set; } // Số nhà, Tên đường (Optional)
+        public string? Ward { get; set; } // Phường/Xã (Required)
+        public string? District { get; set; } // Quận/Huyện (Required)
+        public string? City { get; set; } // Tỉnh/Thành phố (Required)
+        
+        // Combined Address helper
+        public string FullAddress => $"{Street}, {Ward}, {District}, {City}".Trim(',', ' ');
+
         public string? Department { get; set; }
         public string? Position { get; set; }
+
+        // Link to verified citizen record
+        public int? CitizenProfileId { get; set; }
+        public Citizen? CitizenProfile { get; set; }
+
+        public IdentityVerificationStatus IdentityStatus { get; set; } = IdentityVerificationStatus.None;
+    }
+
+    public enum IdentityVerificationStatus
+    {
+        None,
+        Pending,
+        Verified,
+        Rejected,
+        SupplementRequired
     }
 
     public enum ApplicationStatus

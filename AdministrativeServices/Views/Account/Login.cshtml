@@ -8,13 +8,14 @@
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         
         <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input name="email" type="email" class="form-control" placeholder="example@email.com" required />
+            <label class="form-label fw-bold">Số CCCD hoặc Email (Cán bộ)</label>
+            <input name="cccd" class="form-control" placeholder="Nhập số CCCD hoặc Email" required />
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Mật khẩu</label>
+            <label class="form-label fw-bold">Mật khẩu</label>
             <input name="password" type="password" class="form-control" placeholder="••••••••" required />
+            <div class="form-text text-end"><a href="#" class="text-decoration-none text-muted small">Quên mật khẩu?</a></div>
         </div>
 
         <div class="mb-3 form-check">

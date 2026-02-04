@@ -68,54 +68,98 @@ namespace AdministrativeServices.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> VerifyOtp(string otp)
+        public IActionResult VerifyOtp(string otp)
         {
-            var cccd = TempData["Reg_CCCD"]?.ToString();
-            var phone = TempData["Reg_Phone"]?.ToString();
+            var cccd = TempData.Peek("Reg_CCCD")?.ToString();
+            var phone = TempData.Peek("Reg_Phone")?.ToString();
 
             if (string.IsNullOrEmpty(cccd)) return RedirectToAction("Register");
 
             if (otp == "123456") // Mock OTP
             {
-                // Create user
-                var user = new ApplicationUser 
-                { 
-                    UserName = cccd, 
-                    Email = cccd + "@citizen.gov.vn", // Fake email
-                    CCCD = cccd,
-                    PhoneNumber = phone,
-                    FullName = "Công dân (" + cccd + ")" // Temp name
-                };
-
-                // As user didn't provide password, we set a default one? 
-                // Creating without password might complicate login if we fallback to password login.
-                // Assuming "123456" as default password for simplicity OR implementing Passwordless Login?
-                // Let's set a default password for now so they can Login casually.
-                var result = await _userManager.CreateAsync(user, "User@123"); 
-
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, "Citizen");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    
-                    // Redirect to Identity Upload
-                    return RedirectToAction("Index", "Identity");
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
+                // OTP verified, redirect to password creation
+                TempData.Keep("Reg_CCCD");
+                TempData.Keep("Reg_Phone");
+                return RedirectToAction("CreatePassword");
             }
             else
             {
                 ModelState.AddModelError("", "Mã OTP không chính xác");
-                TempData.Keep("Reg_CCCD"); // Keep data
+                TempData.Keep("Reg_CCCD");
                 TempData.Keep("Reg_Phone");
             }
             
             ViewBag.PhoneNumber = phone;
             return View();
         }
+
+        [HttpGet]
+        public IActionResult CreatePassword()
+        {
+            if (TempData.Peek("Reg_CCCD") == null) return RedirectToAction("Register");
+            ViewBag.CCCD = TempData.Peek("Reg_CCCD");
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePassword(string password, string confirmPassword)
+        {
+            var cccd = TempData["Reg_CCCD"]?.ToString();
+            var phone = TempData["Reg_Phone"]?.ToString();
+
+            if (string.IsNullOrEmpty(cccd)) return RedirectToAction("Register");
+
+            // Validate password
+            if (string.IsNullOrEmpty(password) || password.Length < 6)
+            {
+                ModelState.AddModelError("", "Mật khẩu phải có ít nhất 6 ký tự");
+                TempData.Keep("Reg_CCCD");
+                TempData.Keep("Reg_Phone");
+                ViewBag.CCCD = cccd;
+                return View();
+            }
+
+            if (password != confirmPassword)
+            {
+                ModelState.AddModelError("", "Mật khẩu xác nhận không khớp");
+                TempData.Keep("Reg_CCCD");
+                TempData.Keep("Reg_Phone");
+                ViewBag.CCCD = cccd;
+                return View();
+            }
+
+            // Create user with provided password
+            var user = new ApplicationUser 
+            { 
+                UserName = cccd, 
+                Email = cccd + "@citizen.gov.vn",
+                CCCD = cccd,
+                PhoneNumber = phone,
+                FullName = "Công dân (" + cccd + ")"
+            };
+
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Citizen");
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                
+                TempData["SuccessMessage"] = "Đăng ký thành công! Chào mừng bạn.";
+                return RedirectToAction("Index", "Identity");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            TempData.Keep("Reg_CCCD");
+            TempData.Keep("Reg_Phone");
+            ViewBag.CCCD = cccd;
+            return View();
+        }
+
 
         [HttpGet]
         public IActionResult Login() => View();

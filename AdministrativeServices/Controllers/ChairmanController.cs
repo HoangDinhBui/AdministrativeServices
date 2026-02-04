@@ -195,17 +195,92 @@ namespace AdministrativeServices.Controllers
             {
                 var formData = JsonSerializer.Deserialize<JsonElement>(application.ContentJson);
                 
+                var childName = formData.GetProperty("ChildFullName").GetString() ?? "";
+                var childGender = formData.GetProperty("Gender").GetString() ?? "Nam";
+                var childDob = DateTime.Parse(formData.GetProperty("DateOfBirth").GetString() ?? DateTime.Now.ToString());
+                var placeOfBirth = formData.GetProperty("PlaceOfBirth").GetString() ?? "";
+                var fatherCCCD = formData.GetProperty("FatherCCCD").GetString();
+                var motherCCCD = formData.GetProperty("MotherCCCD").GetString();
+                
+                // Get household registration info
+                string? householdParentCCCD = null;
+                string? householdAddress = null;
+                string? relationshipToOwner = "Con";
+                
+                if (formData.TryGetProperty("HouseholdParentCCCD", out var hpCCCD))
+                    householdParentCCCD = hpCCCD.GetString();
+                if (formData.TryGetProperty("HouseholdAddress", out var hAddr))
+                    householdAddress = hAddr.GetString();
+                if (formData.TryGetProperty("RelationshipToOwner", out var rel))
+                    relationshipToOwner = rel.GetString() ?? "Con";
+                
+                // Generate citizen ID for newborn
+                var generatedCitizenId = BirthRegistrationController.GenerateCitizenId("001", childGender, DateTime.Now.Year);
+                
+                // Create Citizen record for the child
+                var childCitizen = new Citizen
+                {
+                    CCCD = generatedCitizenId,
+                    FullName = childName,
+                    DateOfBirth = childDob,
+                    Gender = childGender,
+                    PlaceOfBirth = placeOfBirth,
+                    MaritalStatus = "Chưa kết hôn",
+                    PermanentAddress = householdAddress ?? ""
+                };
+                
+                // Link to parents if they exist in the system
+                var father = await _context.Citizens.FirstOrDefaultAsync(c => c.CCCD == fatherCCCD);
+                var mother = await _context.Citizens.FirstOrDefaultAsync(c => c.CCCD == motherCCCD);
+                
+                if (father != null) childCitizen.FatherId = father.Id;
+                if (mother != null) childCitizen.MotherId = mother.Id;
+                
+                _context.Citizens.Add(childCitizen);
+                await _context.SaveChangesAsync();
+                
+                // Find parent's household and add child as member
+                if (!string.IsNullOrEmpty(householdParentCCCD))
+                {
+                    var parentCitizen = await _context.Citizens
+                        .Include(c => c.CurrentHousehold)
+                        .FirstOrDefaultAsync(c => c.CCCD == householdParentCCCD);
+                    
+                    if (parentCitizen?.CurrentHouseholdId != null)
+                    {
+                        // Add child to parent's household
+                        var householdMember = new HouseholdMember
+                        {
+                            HouseholdId = parentCitizen.CurrentHouseholdId.Value,
+                            CitizenId = childCitizen.Id,
+                            RelationshipToOwner = relationshipToOwner ?? "Con",
+                            JoinDate = DateTime.UtcNow,
+                            IsCurrentMember = true
+                        };
+                        _context.HouseholdMembers.Add(householdMember);
+                        
+                        // Update child's current household
+                        childCitizen.CurrentHouseholdId = parentCitizen.CurrentHouseholdId;
+                        
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                
+                // Create birth record
                 var birthRecord = new BirthRecord
                 {
                     RegistrationNumber = $"KS-{DateTime.Now.Year}-{application.Id:D6}",
-                    GeneratedCitizenId = BirthRegistrationController.GenerateCitizenId("001", formData.GetProperty("Gender").GetString() ?? "Nam", DateTime.Now.Year),
-                    ChildFullName = formData.GetProperty("ChildFullName").GetString() ?? "",
-                    DateOfBirth = DateTime.Parse(formData.GetProperty("DateOfBirth").GetString() ?? DateTime.Now.ToString()),
-                    PlaceOfBirth = formData.GetProperty("PlaceOfBirth").GetString() ?? "",
-                    Gender = formData.GetProperty("Gender").GetString() ?? "",
-                    FatherCCCD = formData.GetProperty("FatherCCCD").GetString(),
+                    GeneratedCitizenId = generatedCitizenId,
+                    ChildFullName = childName,
+                    DateOfBirth = childDob,
+                    PlaceOfBirth = placeOfBirth,
+                    Gender = childGender,
+                    ChildCitizenId = childCitizen.Id,
+                    FatherId = father?.Id,
+                    MotherId = mother?.Id,
+                    FatherCCCD = fatherCCCD,
                     FatherName = formData.GetProperty("FatherName").GetString(),
-                    MotherCCCD = formData.GetProperty("MotherCCCD").GetString(),
+                    MotherCCCD = motherCCCD,
                     MotherName = formData.GetProperty("MotherName").GetString(),
                     RegistrationDate = DateTime.UtcNow,
                     SignedByChairmanId = signedById,
@@ -220,6 +295,7 @@ namespace AdministrativeServices.Controllers
                 // Log error but don't fail the signing process
             }
         }
+
 
         private async Task CreateMarriageRecordFromApplication(Application application, string? signedById)
         {

@@ -86,25 +86,64 @@ namespace AdministrativeServices.Data
                 new Citizen
                 {
                     CCCD = "001099000001",
-                    FullName = "Nguyễn Văn A",
-                    DateOfBirth = new DateTime(1999, 1, 1),
+                    FullName = "Nguyễn Văn An",
+                    DateOfBirth = new DateTime(1990, 1, 15),
                     Gender = "Nam",
                     PlaceOfBirth = "Hà Nội",
                     Hometown = "Nam Định",
                     PermanentAddress = "Số 1, Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
                     Ethnicity = "Kinh",
                     Nationality = "Việt Nam",
-                    MaritalStatus = "Chưa kết hôn"
+                    MaritalStatus = "Đã kết hôn"
                 },
                 new Citizen
                 {
                     CCCD = "001099000002",
-                    FullName = "Trần Thị B",
-                    DateOfBirth = new DateTime(2000, 5, 15),
+                    FullName = "Trần Thị Bình",
+                    DateOfBirth = new DateTime(1992, 5, 20),
                     Gender = "Nữ",
                     PlaceOfBirth = "Đà Nẵng",
                     Hometown = "Quảng Nam",
-                    PermanentAddress = "Số 10, Lê Duẩn, Hải Châu, Đà Nẵng",
+                    PermanentAddress = "Số 1, Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
+                    Ethnicity = "Kinh",
+                    Nationality = "Việt Nam",
+                    MaritalStatus = "Đã kết hôn"
+                },
+                new Citizen
+                {
+                    CCCD = "001099000003",
+                    FullName = "Lê Hoàng Cường",
+                    DateOfBirth = new DateTime(1988, 8, 10),
+                    Gender = "Nam",
+                    PlaceOfBirth = "TP Hồ Chí Minh",
+                    Hometown = "Bình Dương",
+                    PermanentAddress = "Số 50, Nguyễn Huệ, Quận 1, TP Hồ Chí Minh",
+                    Ethnicity = "Kinh",
+                    Nationality = "Việt Nam",
+                    MaritalStatus = "Chưa kết hôn"
+                },
+                new Citizen
+                {
+                    CCCD = "001099000004",
+                    FullName = "Phạm Thị Dung",
+                    DateOfBirth = new DateTime(1995, 3, 25),
+                    Gender = "Nữ",
+                    PlaceOfBirth = "Hải Phòng",
+                    Hometown = "Hải Phòng",
+                    PermanentAddress = "Số 25, Lạch Tray, Ngô Quyền, Hải Phòng",
+                    Ethnicity = "Kinh",
+                    Nationality = "Việt Nam",
+                    MaritalStatus = "Chưa kết hôn"
+                },
+                new Citizen
+                {
+                    CCCD = "001099000005",
+                    FullName = "Hoàng Minh Em",
+                    DateOfBirth = new DateTime(2000, 12, 1),
+                    Gender = "Nam",
+                    PlaceOfBirth = "Cần Thơ",
+                    Hometown = "Cần Thơ",
+                    PermanentAddress = "Số 100, Đường 3/2, Ninh Kiều, Cần Thơ",
                     Ethnicity = "Kinh",
                     Nationality = "Việt Nam",
                     MaritalStatus = "Chưa kết hôn"

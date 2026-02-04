@@ -59,10 +59,17 @@ namespace AdministrativeServices.Controllers
             string fatherCCCD,
             string motherName,
             string motherCCCD,
+            string householdOption,
+            string householdOwnerName,
+            string householdAddress,
+            string relationshipToOwner,
             List<IFormFile> files)
         {
             var userId = _userManager.GetUserId(User);
             if (userId == null) return Unauthorized();
+
+            // Determine parent CCCD for household based on selection
+            var householdParentCCCD = householdOption == "Cha" ? fatherCCCD : motherCCCD;
 
             var formData = new
             {
@@ -73,8 +80,15 @@ namespace AdministrativeServices.Controllers
                 FatherName = fatherName,
                 FatherCCCD = fatherCCCD,
                 MotherName = motherName,
-                MotherCCCD = motherCCCD
+                MotherCCCD = motherCCCD,
+                // Household registration info
+                HouseholdOption = householdOption,
+                HouseholdParentCCCD = householdParentCCCD,
+                HouseholdOwnerName = householdOwnerName,
+                HouseholdAddress = householdAddress,
+                RelationshipToOwner = relationshipToOwner
             };
+
 
             var application = new Application
             {

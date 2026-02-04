@@ -60,6 +60,9 @@
                             else if (User.IsInRole("Chairman"))
                             {
                                 <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Chairman" asp-action="Incoming">Hồ sơ mới tiếp nhận</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" asp-controller="Chairman" asp-action="Queue">Phê duyệt & Ký số</a>
                                 </li>
                             }

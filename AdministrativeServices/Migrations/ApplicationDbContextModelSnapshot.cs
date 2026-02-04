@@ -23,6 +23,12 @@ namespace AdministrativeServices.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("AssignedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AssignedToUserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("CitizenId")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -54,9 +60,9 @@ namespace AdministrativeServices.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CitizenId");
+                    b.HasIndex("AssignedToUserId");
 
-                    b.HasIndex("CurrentOfficialId");
+                    b.HasIndex("CitizenId");
 
                     b.HasIndex("ServiceTypeId");
 
@@ -866,15 +872,15 @@ namespace AdministrativeServices.Migrations
 
             modelBuilder.Entity("AdministrativeServices.Models.Application", b =>
                 {
+                    b.HasOne("AdministrativeServices.Models.ApplicationUser", "AssignedToUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedToUserId");
+
                     b.HasOne("AdministrativeServices.Models.ApplicationUser", "Citizen")
                         .WithMany()
                         .HasForeignKey("CitizenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("AdministrativeServices.Models.ApplicationUser", "CurrentOfficial")
-                        .WithMany()
-                        .HasForeignKey("CurrentOfficialId");
 
                     b.HasOne("AdministrativeServices.Models.ServiceType", "ServiceType")
                         .WithMany()
@@ -882,9 +888,9 @@ namespace AdministrativeServices.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Citizen");
+                    b.Navigation("AssignedToUser");
 
-                    b.Navigation("CurrentOfficial");
+                    b.Navigation("Citizen");
 
                     b.Navigation("ServiceType");
                 });

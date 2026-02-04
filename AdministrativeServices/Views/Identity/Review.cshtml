@@ -32,15 +32,40 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="fw-bold d-block mb-2">Mặt trước:</label>
-                        <img src="@Model.FrontImage" class="img-fluid rounded border bg-light" style="max-height: 200px;" onclick="window.open(this.src, '_blank')" role="button" title="Click để xem ảnh lớn" />
+                        @if (Model.FrontImage != null && Model.FrontImage.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                        {
+                             <embed src="@Model.FrontImage" class="w-100 rounded border bg-light" height="250px" type="application/pdf" />
+                             <a href="@Model.FrontImage" target="_blank" class="btn btn-sm btn-outline-primary mt-1 w-100">Xem file PDF gốc</a>
+                        }
+                        else
+                        {
+                            <img src="@Model.FrontImage" class="img-fluid rounded border bg-light" style="max-height: 200px;" onclick="window.open(this.src, '_blank')" role="button" title="Click để xem ảnh lớn" />
+                        }
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="fw-bold d-block mb-2">Mặt sau:</label>
-                        <img src="@Model.BackImage" class="img-fluid rounded border bg-light" style="max-height: 200px;" onclick="window.open(this.src, '_blank')" role="button" title="Click để xem ảnh lớn" />
+                        @if (Model.BackImage != null && Model.BackImage.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                        {
+                             <embed src="@Model.BackImage" class="w-100 rounded border bg-light" height="250px" type="application/pdf" />
+                             <a href="@Model.BackImage" target="_blank" class="btn btn-sm btn-outline-primary mt-1 w-100">Xem file PDF gốc</a>
+                        }
+                        else
+                        {
+                            <img src="@Model.BackImage" class="img-fluid rounded border bg-light" style="max-height: 200px;" onclick="window.open(this.src, '_blank')" role="button" title="Click để xem ảnh lớn" />
+                        }
                     </div>
                     <div class="col-md-12 mb-3 text-center">
                         <label class="fw-bold d-block mb-2">Chân dung:</label>
-                         <img src="@Model.PortraitImage" class="img-fluid rounded border bg-light" style="max-height: 200px;" onclick="window.open(this.src, '_blank')" role="button" title="Click để xem ảnh lớn" />
+                        @if (Model.PortraitImage != null && Model.PortraitImage.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                        {
+                             <!-- Portrait is usually image, but logic handles pdf safely -->
+                             <embed src="@Model.PortraitImage" class="w-100 rounded border bg-light" height="250px" type="application/pdf" />
+                             <a href="@Model.PortraitImage" target="_blank" class="btn btn-sm btn-outline-primary mt-1 w-100">Xem file PDF gốc</a>
+                        }
+                        else
+                        {
+                            <img src="@Model.PortraitImage" class="img-fluid rounded border bg-light" style="max-height: 200px;" onclick="window.open(this.src, '_blank')" role="button" title="Click để xem ảnh lớn" />
+                        }
                     </div>
                 </div>
             </div>

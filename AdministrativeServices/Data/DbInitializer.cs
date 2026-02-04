@@ -50,6 +50,36 @@ namespace AdministrativeServices.Data
                 await userManager.AddToRoleAsync(official, "Official");
             }
 
+            // Seed Chairman User
+            if (await userManager.FindByEmailAsync("chairman@gov.vn") == null)
+            {
+                var chairman = new ApplicationUser
+                {
+                    UserName = "chairman@gov.vn",
+                    Email = "chairman@gov.vn",
+                    FullName = "Chủ Tịch Ủy Ban",
+                    Position = "Chủ tịch",
+                    EmailConfirmed = true
+                };
+                await userManager.CreateAsync(chairman, "Chairman@123");
+                await userManager.AddToRoleAsync(chairman, "Chairman");
+            }
+
+            // Seed Another Leader User
+            if (await userManager.FindByEmailAsync("leader@gov.vn") == null)
+            {
+                var leader = new ApplicationUser
+                {
+                    UserName = "leader@gov.vn",
+                    Email = "leader@gov.vn",
+                    FullName = "Phó Chủ Tịch",
+                    Position = "Phó Chủ tịch",
+                    EmailConfirmed = true
+                };
+                await userManager.CreateAsync(leader, "Leader@123");
+                await userManager.AddToRoleAsync(leader, "Chairman");
+            }
+
             // Seed Citizens (National Database Simulation)
             var citizens = new List<Citizen>
             {

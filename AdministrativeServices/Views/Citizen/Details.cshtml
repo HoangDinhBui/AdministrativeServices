@@ -20,8 +20,8 @@
                     var badgeClass = Model.Status switch
                     {
                         ApplicationStatus.Submitted => "bg-primary",
-                        ApplicationStatus.InReview => "bg-info",
-                        ApplicationStatus.PendingApproval => "bg-warning",
+                        ApplicationStatus.Processing => "bg-info",
+                        ApplicationStatus.PendingSignature => "bg-warning",
                         ApplicationStatus.Signed => "bg-info",
                         ApplicationStatus.Completed => "bg-success",
                         ApplicationStatus.Rejected => "bg-danger",
@@ -31,8 +31,8 @@
                     var statusText = Model.Status switch
                     {
                         ApplicationStatus.Submitted => "Đã nộp",
-                        ApplicationStatus.InReview => "Đang thẩm định",
-                        ApplicationStatus.PendingApproval => "Chờ ký duyệt",
+                        ApplicationStatus.Processing => "Đang xử lý",
+                        ApplicationStatus.PendingSignature => "Chờ ký duyệt",
                         ApplicationStatus.Signed => "Đã ký",
                         ApplicationStatus.Completed => "Hoàn thành",
                         ApplicationStatus.Rejected => "Bị từ chối",

@@ -39,11 +39,11 @@ namespace AdministrativeServices.Models
     public enum ApplicationStatus
     {
         Draft,
-        AwaitingConfirmation, // Waiting for User B (spouse/owner) to confirm
-        Submitted,
-        InReview,
+        AwaitingConfirmation,
+        Submitted, // Chờ phân công
+        Processing, // Đang xử lý (Đã phân công)
+        PendingSignature, // Chờ ký duyệt
         SupplementRequired,
-        PendingApproval,
         Signed,
         Completed,
         Rejected
@@ -66,13 +66,18 @@ namespace AdministrativeServices.Models
         public int ServiceTypeId { get; set; }
         public ServiceType? ServiceType { get; set; }
 
-        public string ContentJson { get; set; } = string.Empty; // Store form data as JSON
+        public string ContentJson { get; set; } = string.Empty;
         public ApplicationStatus Status { get; set; } = ApplicationStatus.Draft;
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime? LastModifiedDate { get; set; }
 
-        public string? CurrentOfficialId { get; set; }
-        public ApplicationUser? CurrentOfficial { get; set; }
+        // Assignment Info
+        public string? AssignedToUserId { get; set; }
+        public ApplicationUser? AssignedToUser { get; set; }
+        public DateTime? AssignedDate { get; set; }
+
+        public string? CurrentOfficialId { get; set; } // Deprecated or alias for AssignedToUserId? Let's keep for backup or simplify.
+        // Actually AssignedToUser is better. CurrentOfficialId was just a placeholder.
 
         public string? RejectReason { get; set; }
         public string? SupplementNote { get; set; }
@@ -87,7 +92,7 @@ namespace AdministrativeServices.Models
         public int ApplicationId { get; set; }
         public string FileName { get; set; } = string.Empty;
         public string FilePath { get; set; } = string.Empty;
-        public string DocumentType { get; set; } = string.Empty; // e.g., "CT01", "CCCD_Scan"
+        public string DocumentType { get; set; } = string.Empty;
     }
 
     public class ApplicationHistory

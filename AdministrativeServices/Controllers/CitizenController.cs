@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace AdministrativeServices.Controllers
 {
-    [Authorize(Roles = "Citizen")]
+    [Authorize(Roles = "Citizen,Official,Chairman,Admin")]
     public class CitizenController : Controller
     {
         private readonly ApplicationDbContext _context;

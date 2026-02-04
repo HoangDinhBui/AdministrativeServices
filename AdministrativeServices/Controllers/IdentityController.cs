@@ -184,8 +184,11 @@ namespace AdministrativeServices.Controllers
                     request.ProcessedDate = DateTime.UtcNow;
                     request.ProcessedByUserId = _userManager.GetUserId(User);
                     
-                    request.User.IdentityStatus = IdentityVerificationStatus.Rejected;
-                    await _userManager.UpdateAsync(request.User);
+                    if (request.User != null)
+                    {
+                        request.User.IdentityStatus = IdentityVerificationStatus.Rejected;
+                        await _userManager.UpdateAsync(request.User);
+                    }
                     
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
@@ -201,14 +204,16 @@ namespace AdministrativeServices.Controllers
 
                 // Link User to Citizen
                 var user = request.User;
-                user.IdentityStatus = IdentityVerificationStatus.Verified;
-                user.CitizenProfileId = citizen.Id;
-                user.FullName = citizen.FullName; // Sync name
-                user.CCCD = citizen.CCCD;
-                user.Street = citizen.PermanentAddress;
-                // user.Ward = ...; // Need to parse later 
+                if (user != null)
+                {
+                    user.IdentityStatus = IdentityVerificationStatus.Verified;
+                    user.CitizenProfileId = citizen.Id;
+                    user.FullName = citizen.FullName; // Sync name
+                    user.CCCD = citizen.CCCD;
+                    user.Street = citizen.PermanentAddress;
+                    await _userManager.UpdateAsync(user);
+                }
 
-                await _userManager.UpdateAsync(user);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
@@ -239,9 +244,12 @@ namespace AdministrativeServices.Controllers
             request.ProcessedDate = DateTime.UtcNow;
             request.ProcessedByUserId = _userManager.GetUserId(User);
 
-            var user = request.User;
-            user.IdentityStatus = IdentityVerificationStatus.Rejected;
-            await _userManager.UpdateAsync(user);
+            if (request.User != null)
+            {
+                var user = request.User;
+                user.IdentityStatus = IdentityVerificationStatus.Rejected;
+                await _userManager.UpdateAsync(user);
+            }
 
             await _context.SaveChangesAsync();
 

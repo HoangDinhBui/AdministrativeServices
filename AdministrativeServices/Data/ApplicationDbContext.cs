@@ -39,9 +39,9 @@ namespace AdministrativeServices.Data
                 .HasForeignKey(a => a.CitizenId);
 
             builder.Entity<Application>()
-                .HasOne(a => a.CurrentOfficial)
+                .HasOne(a => a.AssignedToUser)
                 .WithMany()
-                .HasForeignKey(a => a.CurrentOfficialId);
+                .HasForeignKey(a => a.AssignedToUserId);
 
             // Citizen unique index
             builder.Entity<Citizen>()

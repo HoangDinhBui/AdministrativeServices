@@ -25,10 +25,14 @@ namespace AdministrativeServices.Controllers
 
         public async Task<IActionResult> Inbox()
         {
+            var currentUserId = _userManager.GetUserId(User);
             var applications = await _context.Applications
                 .Include(a => a.ServiceType)
                 .Include(a => a.Citizen)
-                .Where(a => a.Status != ApplicationStatus.Draft && a.Status != ApplicationStatus.Completed && a.Status != ApplicationStatus.Rejected)
+                .Where(a => a.AssignedToUserId == currentUserId && 
+                           (a.Status == ApplicationStatus.Processing || 
+                            a.Status == ApplicationStatus.SupplementRequired ||
+                            a.Status == ApplicationStatus.PendingSignature)) // Show pending signature too so they can track?
                 .OrderByDescending(a => a.CreatedDate)
                 .ToListAsync();
 

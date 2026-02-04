@@ -28,11 +28,55 @@ namespace AdministrativeServices.Controllers
             var applications = await _context.Applications
                 .Include(a => a.ServiceType)
                 .Include(a => a.Citizen)
-                .Where(a => a.Status == ApplicationStatus.PendingApproval)
+                .Where(a => a.Status == ApplicationStatus.PendingSignature)
                 .OrderByDescending(a => a.CreatedDate)
                 .ToListAsync();
 
             return View(applications);
+        }
+
+        public async Task<IActionResult> Incoming()
+        {
+            var applications = await _context.Applications
+                .Include(a => a.ServiceType)
+                .Include(a => a.Citizen)
+                .Where(a => a.Status == ApplicationStatus.Submitted)
+                .OrderByDescending(a => a.CreatedDate)
+                .ToListAsync();
+
+            var officials = await _userManager.GetUsersInRoleAsync("Official");
+            ViewBag.Officials = officials;
+
+            return View(applications);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Assign(int id, string officialId)
+        {
+            var application = await _context.Applications.FindAsync(id);
+            if (application == null) return NotFound();
+
+            var official = await _userManager.FindByIdAsync(officialId);
+            if (official == null) return NotFound();
+
+            application.AssignedToUserId = officialId;
+            application.AssignedDate = DateTime.UtcNow;
+            application.Status = ApplicationStatus.Processing;
+            application.LastModifiedDate = DateTime.UtcNow;
+
+            var currentUserId = _userManager.GetUserId(User);
+
+            _context.ApplicationHistories.Add(new ApplicationHistory
+            {
+                ApplicationId = id,
+                Status = ApplicationStatus.Processing,
+                Note = $"Đã phân công hồ sơ cho cán bộ: {official.FullName}",
+                ChangedById = currentUserId ?? ""
+            });
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Đã phân công hồ sơ #{id:D5} cho cán bộ {official.FullName}.";
+            return RedirectToAction(nameof(Incoming));
         }
 
         public async Task<IActionResult> Review(int id)

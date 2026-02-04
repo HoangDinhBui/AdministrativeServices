@@ -43,7 +43,8 @@
                                     var badgeClass = item.Status switch
                                     {
                                         ApplicationStatus.Submitted => "bg-primary",
-                                        ApplicationStatus.InReview => "bg-info",
+                                        ApplicationStatus.Processing => "bg-info",
+                                        ApplicationStatus.PendingSignature => "bg-warning",
                                         ApplicationStatus.Completed => "bg-success",
                                         ApplicationStatus.Rejected => "bg-danger",
                                         ApplicationStatus.SupplementRequired => "bg-warning",

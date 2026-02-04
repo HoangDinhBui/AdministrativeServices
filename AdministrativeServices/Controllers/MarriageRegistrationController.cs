@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdministrativeServices.Controllers
 {
-    [Authorize(Roles = "Citizen")]
+    [Authorize(Roles = "Citizen,Official,Chairman,Admin")]
     public class MarriageRegistrationController : Controller
     {
         private readonly ApplicationDbContext _context;

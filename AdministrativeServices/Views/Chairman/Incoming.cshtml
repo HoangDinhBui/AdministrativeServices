@@ -1,0 +1,107 @@
+@model IEnumerable<AdministrativeServices.Models.Application>
+
+@{
+    ViewData["Title"] = "Hồ sơ mới tiếp nhận";
+    var officials = ViewBag.Officials as IEnumerable<AdministrativeServices.Models.ApplicationUser>;
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold">Hồ sơ mới tiếp nhận</h2>
+    <p class="text-muted">Danh sách hồ sơ mới nộp cần phân công xử lý.</p>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="glass-card p-4">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-3">
+                <i class="bi bi-inbox fs-1 text-muted"></i>
+            </div>
+            <p class="text-muted">Không có hồ sơ mới cần phân công.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã số</th>
+                        <th>Người nộp</th>
+                        <th>Dịch vụ</th>
+                        <th>Ngày nộp</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">#@item.Id.ToString("D5")</td>
+                            <td>
+                                <div>@item.Citizen?.FullName</div>
+                                <small class="text-muted">@item.Citizen?.Email</small>
+                            </td>
+                            <td><span class="badge bg-primary">@item.ServiceType?.Name</span></td>
+                            <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignModal-@item.Id">
+                                    <i class="bi bi-person-check"></i> Phân công
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@* Render Modals outside the table to prevent Backdrop/Z-Index issues *@
+@if (Model.Any())
+{
+    foreach (var item in Model)
+    {
+        <!-- Assign Modal for Item #@item.Id -->
+        <div class="modal fade" id="assignModal-@item.Id" tabindex="-1" aria-hidden="true" data-bs-focus="false">
+             <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Phân công xử lý hồ sơ #@item.Id.ToString("D5")</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-action="Assign" method="post">
+                        <div class="modal-body">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <div class="mb-3">
+                                <label class="form-label">Chọn cán bộ xử lý</label>
+                                <select name="officialId" class="form-select" required>
+                                    <option value="">-- Chọn cán bộ --</option>
+                                    @if (officials != null)
+                                    {
+                                        foreach (var official in officials)
+                                        {
+                                            <option value="@official.Id">@official.FullName (@official.Email)</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Xác nhận phân công</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+}
